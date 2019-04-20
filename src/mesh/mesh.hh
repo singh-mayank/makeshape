@@ -3,6 +3,8 @@
 #include <Eigen/Dense>
 #include <igl/adjacency_list.h>
 
+namespace mesh {
+
 class Mesh {
   public:
     Mesh() {};
@@ -24,3 +26,5 @@ class Mesh {
     std::vector<std::vector<int>> adj_vertices_;
 
 };
+
+}

@@ -16,6 +16,8 @@
 
 #pragma once
 
+namespace app {
+
 class App {
 
     App(const App& app);
@@ -31,10 +33,12 @@ class App {
     void load_cube();
     bool load_mesh(const std::string&& filename);
   
-    Mesh& mesh() { return m; }
-    const Mesh& const_mesh() const { return m; }
+    mesh::Mesh& mesh() { return m; }
+    const mesh::Mesh& const_mesh() const { return m; }
 
   private:
-    Mesh m;
+    mesh::Mesh m;
 
 };
+
+} // namespace app

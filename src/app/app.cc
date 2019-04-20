@@ -27,6 +27,8 @@ namespace {
     2,8,4).finished().array()-1;
 } // end namespace
 
+namespace app {
+
 void App::load_cube() {
     m.vertices() = CUBE_VERTICES;
     m.faces() = CUBE_FACES;
@@ -47,3 +49,4 @@ void App::custom_menu_callback(igl::opengl::glfw::Viewer* viewer,
 
 }
 
+} // namespace app
