@@ -6,8 +6,8 @@ Generated a triangle mesh from a set of points in space.
 
 Compile this project using the standard cmake routine:
 ```
-    mkdir build
-    cd build
+    mkdir builds
+    cd builds
     cmake ..
     make
 ```
@@ -23,15 +23,23 @@ A glfw app should launch displaying a 3D cube.
 
 ## Dependencies
 
-The only dependencies are stl, eigen, [libigl](http://libigl.github.io/libigl/) and
-the dependencies of the `igl::opengl::glfw::Viewer`.
+The only dependencies are stl, eigen, [libigl](http://libigl.github.io/libigl/) and the 
+dependencies of the `igl::opengl::glfw::Viewer`.
 
-We recommend you to install libigl using git via:
+Clone, and build `libigl` like so:
 ```
     git clone https://github.com/libigl/libigl.git
     cd libigl/
     git submodule update --init --recursive
-    cd ..
+    mkdir builds
+    cd builds
+    cmake ..
+    make
 ```
-If you have installed libigl at `/path/to/libigl/` then a good place to clone
-this library is `/path/to/makeshape/`.
+If you have installed libigl at `/path/to/libigl/` then a good place to clone this library 
+is `/path/to/makeshape/`.
+
+## Recommendation
+We recommend using `ninja` instead of `make`. Download install `ninja` from here [
+https://ninja-build.org/ ]
+
