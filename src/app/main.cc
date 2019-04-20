@@ -32,8 +32,8 @@ int main(int argc, char *argv[])
             std::placeholders::_3);
     viewer.callback_mouse_down = mousepress_callback_ptr;
 
-    auto custom_menu_callback_ptr = std::bind(&App::custom_menu_callback, &application, 
-            &viewer, 
+    auto custom_menu_callback_ptr = std::bind(&App::custom_menu_callback, &application,
+            &viewer,
             &menu);
     menu.callback_draw_custom_window = custom_menu_callback_ptr;
 
