@@ -28,12 +28,12 @@ namespace {
 } // end namespace
 
 void App::load_cube() {
-    v_ = CUBE_VERTICES;
-    f_ = CUBE_FACES;
+    m.vertices() = CUBE_VERTICES;
+    m.faces() = CUBE_FACES;
 }
 
 bool App::load_mesh(const std::string&& filename) {
-    return igl::readOBJ(std::move(filename), v_, f_);
+    return igl::readOBJ(std::move(filename), m.vertices(), m.faces());
 }
 
 bool App::mousepress_callback(igl::opengl::glfw::Viewer& viewer, int x, int y) {

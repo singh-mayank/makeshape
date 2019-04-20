@@ -1,5 +1,7 @@
 // Copyright MakeShape. 2019, All rights reserved.
 
+#include "mesh.hh"
+
 #include <igl/opengl/glfw/Viewer.h>
 #include <igl/unproject_onto_mesh.h>
 
@@ -21,9 +23,6 @@ class App {
 
   public:
     App(){}
-    
-    const Eigen::MatrixXd& vertices() const{ return v_; }
-    const Eigen::MatrixXi& faces() const{ return f_; }
 
     bool mousepress_callback(igl::opengl::glfw::Viewer& viewer, int x, int y);
     void custom_menu_callback(igl::opengl::glfw::Viewer* viewer,
@@ -31,9 +30,11 @@ class App {
 
     void load_cube();
     bool load_mesh(const std::string&& filename);
+  
+    Mesh& mesh() { return m; }
+    const Mesh& const_mesh() const { return m; }
 
   private:
-    Eigen::MatrixXd v_;
-    Eigen::MatrixXi f_;
+    Mesh m;
 
 };

@@ -32,9 +32,12 @@ target_sources( ${exe}
 target_include_directories( ${exe}
     PUBLIC
         ./
+        "mesh"
 )
 
 target_link_libraries( ${exe}
+    PRIVATE
+        "mesh"
     PUBLIC
         igl::core 
         igl::opengl_glfw 
