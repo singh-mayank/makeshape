@@ -17,9 +17,12 @@ This should find and build the dependencies and create a `makeshape` binary.
 
 From within the `build` directory just issue:
 ```
-    ./makeshape
+    ./bin/makeshape
 ```
-A glfw app should launch displaying a 3D cube.
+A glfw app should launch displaying a 3D cube,  or
+```
+    ./bin/makeshape ./data/bunny.obj
+```
 
 ## Dependencies
 
