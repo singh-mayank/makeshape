@@ -4,6 +4,6 @@
 
 #define STR(x) #x
 #define CHECK(x) if (!(x)) { \
-    printf("My custom assertion failed: (%s), file %s, line %d.\n", STR(x), __FILE__, __LINE__); \
+    printf("Check failed: (%s), file %s, line %d.\n", STR(x), __FILE__, __LINE__); \
     abort(); \
 }
