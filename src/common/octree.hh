@@ -30,6 +30,7 @@ class Octree {
     Octree(const size_t max_depth);
     ~Octree();
     bool build(const std::vector<Eigen::Vector3d> &points);
+    void print_stats() const;
 }; // octree
 
 } // common
