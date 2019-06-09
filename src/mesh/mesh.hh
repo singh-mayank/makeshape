@@ -3,6 +3,7 @@
 #include <Eigen/Dense>
 #include <igl/adjacency_list.h>
 
+namespace makeshape {
 namespace mesh {
 
 class Mesh {
@@ -27,4 +28,5 @@ class Mesh {
 
 };
 
-}
+} // mesh
+} // makeshape

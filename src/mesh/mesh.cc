@@ -2,6 +2,7 @@
 
 #include "mesh.hh"
 
+namespace makeshape {
 namespace mesh {
 
 Mesh Mesh::deep_copy() const {
@@ -11,4 +12,5 @@ Mesh Mesh::deep_copy() const {
     return m;
 }
 
-} // namespace mesh
+} // mesh
+} // makeshape

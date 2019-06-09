@@ -16,6 +16,7 @@
 
 #pragma once
 
+namespace makeshape {
 namespace app {
 
 class App {
@@ -42,3 +43,4 @@ class App {
 };
 
 } // namespace app
+} // namespace makeshape

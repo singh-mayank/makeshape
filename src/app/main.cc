@@ -8,7 +8,7 @@
 // 
 int main(int argc, char *argv[])
 {
-    app::App application;
+    makeshape::app::App application;
 
     if (argc < 2) {
         application.load_cube();
@@ -26,13 +26,13 @@ int main(int argc, char *argv[])
     igl::opengl::glfw::imgui::ImGuiMenu menu;
     viewer.plugins.push_back(&menu);
 
-    auto mousepress_callback_ptr = std::bind(&app::App::mousepress_callback, &application,
+    auto mousepress_callback_ptr = std::bind(&makeshape::app::App::mousepress_callback, &application,
             std::placeholders::_1,
             std::placeholders::_2,
             std::placeholders::_3);
     viewer.callback_mouse_down = mousepress_callback_ptr;
 
-    auto custom_menu_callback_ptr = std::bind(&app::App::custom_menu_callback, &application,
+    auto custom_menu_callback_ptr = std::bind(&makeshape::app::App::custom_menu_callback, &application,
             &viewer,
             &menu);
     menu.callback_draw_custom_window = custom_menu_callback_ptr;
