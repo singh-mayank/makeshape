@@ -13,6 +13,7 @@ struct OctreeNode {
     Eigen::Vector3d center;
     Eigen::Vector3d extents;
     OctreeNode *child[8];
+    std::vector<Eigen::Vector3d> points;
     OctreeNode() {
         center = Eigen::Vector3d(0, 0, 0);
         extents = Eigen::Vector3d(1, 1, 1);
@@ -24,9 +25,9 @@ struct OctreeNode {
 
 class Octree {
     OctreeNode *root_;
-    const int max_depth_;
+    const size_t max_depth_;
   public:
-    Octree(const int max_depth);
+    Octree(const size_t max_depth);
     ~Octree();
     bool build(const std::vector<Eigen::Vector3d> &points);
 }; // octree
