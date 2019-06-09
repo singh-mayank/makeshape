@@ -45,4 +45,5 @@ set( data_dir "${CMAKE_BINARY_DIR}/data" CACHE PATH "Path to data" )
 file(MAKE_DIRECTORY ${data_dir})
 
 #----------------------------------------------------------------------
+add_subdirectory(googletest)
 add_subdirectory(src)
