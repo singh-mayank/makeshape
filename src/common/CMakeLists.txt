@@ -8,6 +8,7 @@ set( lib "common" )
 
 # headers
 set( headers 
+    common.hh
     octree.hh
 )
 
