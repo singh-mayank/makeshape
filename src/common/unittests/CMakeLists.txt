@@ -30,12 +30,12 @@ target_sources( ${test}
 target_include_directories( ${test}
     PUBLIC
         ./
-        common
+        "common"
 )
 
 target_link_libraries( ${test}
     PRIVATE
-        common
+        "common"
     PUBLIC
         gtest_main
 )

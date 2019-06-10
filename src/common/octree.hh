@@ -7,17 +7,20 @@
 namespace makeshape {
 namespace common {
 
-constexpr int OCTREE_MAX_CHILDREN = 8;
-
-struct OctreeNode {
+class OctreeNode {
+  public:
+    static constexpr int MAX_CHILDREN = 8;
     Eigen::Vector3d center;
     Eigen::Vector3d extents;
-    OctreeNode *child[8];
+    OctreeNode *child[ MAX_CHILDREN ];
     std::vector<Eigen::Vector3d> points;
     OctreeNode() {
-        center = Eigen::Vector3d(0, 0, 0);
-        extents = Eigen::Vector3d(1, 1, 1);
-        for(int i = 0; i < OCTREE_MAX_CHILDREN; ++i) {
+        OctreeNode(Eigen::Vector3d(0.5, 0.5, 0.5), Eigen::Vector3d(1, 1, 1));
+    }
+    OctreeNode(const Eigen::Vector3d& c, const Eigen::Vector3d& e) {
+        center = c;
+        extents = e;
+        for(int i = 0; i < MAX_CHILDREN; ++i) {
             child[i] = nullptr;
         }
     }
@@ -30,7 +33,7 @@ class Octree {
     Octree(const size_t max_depth);
     ~Octree();
     bool build(const std::vector<Eigen::Vector3d> &points);
-    void print_stats() const;
+    size_t num_nodes() const;
 }; // octree
 
 } // common
