@@ -28,5 +28,8 @@ class Mesh {
 
 };
 
+Mesh load_mesh(const std::string &filename);
+Mesh load_cube();
+
 } // mesh
 } // makeshape
