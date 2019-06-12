@@ -5,10 +5,11 @@
 #pragma once
 
 namespace makeshape {
-namespace common {
+namespace spatial {
 
 class OctreeNode {
   public:
+    //TODO(mayank): make these private
     static constexpr int MAX_CHILDREN = 8;
     Eigen::Vector3d center;
     Eigen::Vector3d extents;
@@ -36,5 +37,5 @@ class Octree {
     size_t num_nodes() const;
 }; // octree
 
-} // common
+} // spatial 
 } // makeshape

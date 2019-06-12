@@ -4,7 +4,6 @@
 
 #include "gtest/gtest.h" 
 
-
 TEST(Octree, build_tree)
 {
     std::vector<Eigen::Vector3d> p{
@@ -20,12 +19,12 @@ TEST(Octree, build_tree)
     };
 
     {
-        makeshape::common::Octree o(1);
+        makeshape::spatial::Octree o(1);
         o.build(p);
         EXPECT_EQ(o.num_nodes(), 9u);
     }
     {
-        makeshape::common::Octree o(2);
+        makeshape::spatial::Octree o(2);
         o.build(p);
         EXPECT_EQ(o.num_nodes(), 17u);
     }

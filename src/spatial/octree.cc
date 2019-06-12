@@ -6,7 +6,7 @@
 #include <cstdio>
  
 namespace makeshape {
-namespace common {
+namespace spatial {
 
 using Point = Eigen::Vector3d;
 constexpr int DIM = 3;
@@ -137,5 +137,5 @@ size_t Octree::num_nodes() const {
     return count_nodes(root_);
 }
 
-} // common
+} // spatial 
 } // makeshape
