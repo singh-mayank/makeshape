@@ -1,10 +1,10 @@
 #----------------------------------------------------------------------
-#
+# spatial
 #----------------------------------------------------------------------
 project ( ${CMAKE_PROJECT_NAME} )
 
 # library 
-set( test "unittest_common" )
+set( test "unittest_spatial" )
 
 # headers
 set( headers 
@@ -18,7 +18,7 @@ set( sources
 # copy headers to include directory
 # file( COPY ${headers} DESTINATION ${inc} )
 
-# create lib
+# create test exectuable
 add_executable( ${test} "" )
 set_property(TARGET ${test} PROPERTY CXX_STANDARD 11)
 target_sources( ${test} 
@@ -30,12 +30,12 @@ target_sources( ${test}
 target_include_directories( ${test}
     PUBLIC
         ./
-        "common"
+        "spatial"
 )
 
 target_link_libraries( ${test}
     PRIVATE
-        "common"
+        "spatial"
     PUBLIC
         gtest_main
 )

@@ -1,6 +1,7 @@
 // Copyright MakeShape. 2019, All rights reserved.
 
 #include <cstdarg>
+#include <cstdio>
 
 #pragma once
 

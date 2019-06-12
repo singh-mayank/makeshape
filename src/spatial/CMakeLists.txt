@@ -8,10 +8,12 @@ set( lib "spatial" )
 
 # headers
 set( headers 
+    octree.hh
 )
 
 # source files
 set( sources
+    octree.cc
 )
 
 # copy headers to include directory
@@ -29,12 +31,14 @@ target_sources( ${lib}
 target_include_directories( ${lib}
     PUBLIC
         ./
+        "common"
 )
 
 target_link_libraries( ${lib}
     PRIVATE
+        "common"
     PUBLIC
-        # igl::core
+        igl::core
 )
 
 # copies 'spatial' into lib_dir
@@ -42,4 +46,4 @@ add_custom_command(TARGET ${lib} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${lib}> ${lib_dir}
 )
 
-# add_subdirectory( unittests )
+add_subdirectory( unittests )

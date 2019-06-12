@@ -1,5 +1,5 @@
 #----------------------------------------------------------------------
-#
+# common
 #----------------------------------------------------------------------
 project ( ${CMAKE_PROJECT_NAME} )
 
@@ -9,12 +9,11 @@ set( lib "common" )
 # headers
 set( headers 
     common.hh
-    octree.hh
 )
 
 # source files
 set( sources
-    octree.cc
+    common.cc
 )
 
 # copy headers to include directory
@@ -40,9 +39,9 @@ target_link_libraries( ${lib}
         igl::core 
 )
 
-# copies 'mesh' into lib_dir
+# copies 'common' into lib_dir
 add_custom_command(TARGET ${lib} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${lib}> ${lib_dir}
 )
 
-add_subdirectory( unittests )
+# add_subdirectory( unittests )
