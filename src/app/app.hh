@@ -21,7 +21,7 @@ namespace app {
 class App {
   public:
     App();
-    void add_mesh(const mesh::Mesh &m);
+    void add_mesh(const spatial::Mesh &m);
     void launch();
   private:
     App(const App& app) = delete;

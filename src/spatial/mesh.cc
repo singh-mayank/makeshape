@@ -3,6 +3,7 @@
 #include "mesh.hh"
 
 #include <igl/readOBJ.h>
+#include <igl/adjacency_list.h>
 
 namespace {
   const Eigen::MatrixXd CUBE_VERTICES = (Eigen::MatrixXd(8,3)<<
@@ -30,7 +31,7 @@ namespace {
 } // namespace
 
 namespace makeshape {
-namespace mesh {
+namespace spatial {
 
 Mesh::Mesh(const Mesh &other) {
     v_ = other.const_vertices();
@@ -45,11 +46,8 @@ Mesh& Mesh::operator=(const Mesh& other) {
     return *this;
 }
 
-Mesh Mesh::deep_copy() const {
-    Mesh m;
-    m.vertices() = const_vertices();
-    m.faces() = const_faces();
-    return m;
+void Mesh::build_adjacent_vertices(){ 
+    igl::adjacency_list(f_, adj_vertices_); 
 }
 
 Mesh load_mesh(const std::string &filename) {

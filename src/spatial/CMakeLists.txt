@@ -9,11 +9,13 @@ set( lib "spatial" )
 # headers
 set( headers 
     octree.hh
+    mesh.hh
 )
 
 # source files
 set( sources
     octree.cc
+    mesh.cc
 )
 
 # copy headers to include directory

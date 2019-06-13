@@ -32,17 +32,17 @@ target_sources( ${exe}
 target_include_directories( ${exe}
     PUBLIC
         ./
-        "mesh"
+        "spatial"
 )
 
 target_link_libraries( ${exe}
     PRIVATE
-        "mesh"
+        "spatial"
     PUBLIC
         igl::core 
         igl::opengl_glfw 
         igl::opengl_glfw_imgui 
-        igl::png
+        igl::png # not needed.
 )
 
 # copies 'makeshape_bin' into bin_dir

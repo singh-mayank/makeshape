@@ -18,7 +18,7 @@ App::App(){
             &menu_);
 }
 
-void App::add_mesh(const mesh::Mesh &m) {
+void App::add_mesh(const spatial::Mesh &m) {
     viewer_.data().set_mesh(m.const_vertices(), m.const_faces());
     viewer_.data().set_face_based(true);
 }

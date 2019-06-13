@@ -31,12 +31,12 @@ target_sources( ${lib}
 target_include_directories( ${lib}
     PUBLIC
         ./
-        "mesh"
+        "spatial"
 )
 
 target_link_libraries( ${lib}
     PRIVATE
-        "mesh"
+        "spatial"
     PUBLIC
         igl::core 
 )
