@@ -1,7 +1,6 @@
 // Copyright MakeShape. 2019, All rights reserved.
 
 #include <cstdarg>
-#include <cstdio>
 
 #pragma once
 
@@ -14,18 +13,7 @@ namespace common {
     abort(); \
 }
 
-int dprintf(const char* format, ...) 
-{
-#ifdef NDEBUG
-    return 0;
-#else
-  va_list vl;
-  va_start(vl, format);
-  auto ret = vprintf(format, vl);
-  va_end(vl);
-  return ret;
-#endif
-}
+int dprintf(const char* format, ...);
 
 } // common
 } // makeshape

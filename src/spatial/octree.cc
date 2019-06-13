@@ -9,14 +9,14 @@ namespace makeshape {
 namespace spatial {
 
 using Point = Eigen::Vector3d;
-constexpr int DIM = 3;
+constexpr size_t DIM = 3;
 
 namespace {
 
 bool inside(const OctreeNode *n, const Point &p) {
     const Point min_pt = n->center - n->extents;
     const Point max_pt = n->center + n->extents;
-    for(int i = 0; i < DIM; ++i) {
+    for(size_t i = 0; i < DIM; ++i) {
         if (p[i] < min_pt[i]) { return false; }
         if (p[i] > max_pt[i]) { return false; }
     }

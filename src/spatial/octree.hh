@@ -10,7 +10,7 @@ namespace spatial {
 class OctreeNode {
   public:
     //TODO(mayank): make these private
-    static constexpr int MAX_CHILDREN = 8;
+    static constexpr size_t MAX_CHILDREN = 8;
     Eigen::Vector3d center;
     Eigen::Vector3d extents;
     OctreeNode *child[ MAX_CHILDREN ];
@@ -21,20 +21,21 @@ class OctreeNode {
     OctreeNode(const Eigen::Vector3d& c, const Eigen::Vector3d& e) {
         center = c;
         extents = e;
-        for(int i = 0; i < MAX_CHILDREN; ++i) {
+        for(size_t i = 0; i < MAX_CHILDREN; ++i) {
             child[i] = nullptr;
         }
     }
 };
 
 class Octree {
-    OctreeNode *root_;
-    const size_t max_depth_;
   public:
     Octree(const size_t max_depth);
     ~Octree();
     bool build(const std::vector<Eigen::Vector3d> &points);
     size_t num_nodes() const;
+  private:
+    OctreeNode *root_;
+    const size_t max_depth_;
 }; // octree
 
 } // spatial 

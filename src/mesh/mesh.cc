@@ -4,9 +4,6 @@
 
 #include <igl/readOBJ.h>
 
-namespace makeshape {
-namespace mesh {
-
 namespace {
   const Eigen::MatrixXd CUBE_VERTICES = (Eigen::MatrixXd(8,3)<<
     0.0,0.0,0.0,
@@ -31,6 +28,22 @@ namespace {
     2,6,8,
     2,8,4).finished().array()-1;
 } // namespace
+
+namespace makeshape {
+namespace mesh {
+
+Mesh::Mesh(const Mesh &other) {
+    v_ = other.const_vertices();
+    f_ = other.const_faces();
+}
+
+Mesh& Mesh::operator=(const Mesh& other) {
+    if (this != &other) {
+        v_ = other.const_vertices();
+        f_ = other.const_faces();
+    }
+    return *this;
+}
 
 Mesh Mesh::deep_copy() const {
     Mesh m;
