@@ -6,10 +6,10 @@ namespace makeshape {
 namespace dual_contouring {
 
 // TODO(msingh): fix this
-mesh::Mesh generate_mesh(/* pass octree here */) {
+spatial::Mesh generate_mesh(/* pass octree here */) {
 
     // do computations..
-    return mesh::Mesh{};
+    return spatial::Mesh{};
 }
 
 } // dual contouring

@@ -8,6 +8,7 @@ set( lib "spatial" )
 
 # headers
 set( headers 
+    edges.hh
     octree.hh
     mesh.hh
 )

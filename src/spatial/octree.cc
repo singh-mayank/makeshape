@@ -67,7 +67,12 @@ OctreeNode* insert(OctreeNode *n,
             child_center = center_and_extents.first;
             child_extents = center_and_extents.second;
         } 
-        n->child[index] = insert(n->child[index], p, child_center, child_extents, curr_depth+1, max_depth);
+        n->child[index] = insert(n->child[index], 
+                p, 
+                child_center, 
+                child_extents, 
+                curr_depth+1, 
+                max_depth);
     }
     return n;
 }
@@ -96,6 +101,22 @@ size_t count_nodes(const OctreeNode *n) {
 }
 
 } // namespace
+
+OctreeNode::OctreeNode() {
+    OctreeNode(Eigen::Vector3d(0.5, 0.5, 0.5), Eigen::Vector3d(1, 1, 1));
+}
+OctreeNode::OctreeNode(const Eigen::Vector3d& c, const Eigen::Vector3d& e) {
+    center = c;
+    extents = e;
+    for(size_t i = 0; i < MAX_CHILDREN; ++i) {
+        child[i] = nullptr;
+    }
+}
+
+Edges OctreeNode::get_edges() const {
+    Edges e;
+    return e;
+}
 
 
 Octree::Octree(const size_t max_depth) 
