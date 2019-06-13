@@ -12,7 +12,6 @@ class OctreeNode {
   public:
     OctreeNode();
     OctreeNode(const Eigen::Vector3d& c, const Eigen::Vector3d& e);
-    Edges get_edges() const;
     static constexpr size_t MAX_CHILDREN = 8;
     Eigen::Vector3d center;
     Eigen::Vector3d extents;
@@ -26,7 +25,7 @@ class Octree {
     ~Octree();
     bool build(const std::vector<Eigen::Vector3d> &points);
     size_t num_nodes() const;
-    //Edges get_edges() const;
+    Edges get_edges() const;
   private:
     OctreeNode *root_;
     const size_t max_depth_;

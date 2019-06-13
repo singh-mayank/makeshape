@@ -4,14 +4,23 @@
 #include "common.hh"
 #include <cstdlib>
 #include <cstdio>
+#include <list>
+#include <array>
  
 namespace makeshape {
 namespace spatial {
+namespace {
 
 using Point = Eigen::Vector3d;
+using VertexPair = std::pair<Point, Point>;
 constexpr size_t DIM = 3;
+constexpr size_t N_VERTICES = 8;
+constexpr size_t N_EDGES = 12;
 
-namespace {
+struct NodeEdges {
+    std::array<Point, N_VERTICES> v;
+    std::array<std::pair<int, int>, N_EDGES> e;
+};
 
 bool inside(const OctreeNode *n, const Point &p) {
     const Point min_pt = n->center - n->extents;
@@ -100,6 +109,40 @@ size_t count_nodes(const OctreeNode *n) {
     return c;
 }
 
+NodeEdges get_node_edges(const OctreeNode *n) {
+    NodeEdges ne;
+    {
+        Point min_pt{n->center - 0.5*n->extents};       
+        Point max_pt{n->center + 0.5*n->extents};
+        // bottom
+        ne.v[0] = min_pt;
+        ne.v[1] = Point(max_pt[0], min_pt[1], min_pt[2]);
+        ne.v[2] = Point(max_pt[0], max_pt[1], min_pt[2]);
+        ne.v[3] = Point(min_pt[0], max_pt[1], min_pt[2]);
+        // top
+        ne.v[4] = Point(min_pt[0], min_pt[1], max_pt[2]);
+        ne.v[5] = Point(max_pt[0], min_pt[1], max_pt[2]);
+        ne.v[6] = max_pt;
+        ne.v[7] = Point(min_pt[0], max_pt[1], max_pt[2]);
+
+        ne.e[0] = std::make_pair(0, 1);
+        ne.e[1] = std::make_pair(1, 2);
+        ne.e[2] = std::make_pair(2, 3);
+        ne.e[3] = std::make_pair(3, 0);
+
+        ne.e[4] = std::make_pair(4, 5);
+        ne.e[5] = std::make_pair(5, 6);
+        ne.e[6] = std::make_pair(6, 7);
+        ne.e[7] = std::make_pair(7, 0);
+
+        ne.e[8]  = std::make_pair(1, 4);
+        ne.e[9]  = std::make_pair(2, 5);
+        ne.e[10] = std::make_pair(3, 6);
+        ne.e[11] = std::make_pair(4, 7);
+    }
+    return ne;
+}
+
 } // namespace
 
 OctreeNode::OctreeNode() {
@@ -112,12 +155,6 @@ OctreeNode::OctreeNode(const Eigen::Vector3d& c, const Eigen::Vector3d& e) {
         child[i] = nullptr;
     }
 }
-
-Edges OctreeNode::get_edges() const {
-    Edges e;
-    return e;
-}
-
 
 Octree::Octree(const size_t max_depth) 
     : root_(nullptr)
@@ -157,6 +194,49 @@ bool Octree::build(const std::vector<Eigen::Vector3d> &points) {
 size_t Octree::num_nodes() const {
     return count_nodes(root_);
 }
+
+Edges Octree::get_edges() const {
+    if (root_ == nullptr) {
+        return Edges{};
+    }
+    // traverse all nodes
+    std::vector<NodeEdges> ne;
+    std::list<OctreeNode*> q;
+    q.push_back(root_);
+    while(!q.empty()){
+        const OctreeNode *curr = q.front();
+        q.pop_front();
+        ne.emplace_back(get_node_edges(curr));
+        for(size_t i = 0; i < OctreeNode::MAX_CHILDREN; ++i) {
+            if (curr->child[i] != nullptr) {
+                q.push_back(curr->child[i]);
+            }
+        }
+    }
+    Edges e;
+    {
+        // vertices
+        e.P.resize(ne.size()*N_VERTICES, DIM);
+        for (size_t i = 0; i < ne.size(); ++i) {
+            for(size_t j = 0; j < N_VERTICES; ++j) {
+                for(size_t k = 0; k < DIM; ++k) {
+                    e.P(N_VERTICES * i + j, k) = ne[i].v[j][k];
+                }
+            }
+        }
+        // edges
+        constexpr size_t VERTICES_PER_EDGE = 2;
+        e.E.resize(ne.size()*N_EDGES, VERTICES_PER_EDGE); // 2 vertices per edge
+        for (size_t i = 0; i < ne.size(); ++i) {
+            for(size_t j = 0; j < N_EDGES; ++j) {
+                e.E(N_EDGES * i + j, 0) = ne[i].e[j].first;
+                e.E(N_EDGES * i + j, 1) = ne[i].e[j].second;
+            }
+        }
+    }
+    return e;
+}
+
 
 } // spatial 
 } // makeshape
