@@ -8,11 +8,11 @@
 namespace makeshape {
 namespace spatial {
 
-class Mesh {
+class TriMesh {
   public:
-    Mesh() { /* do nothing */ }
-    Mesh(const Mesh& other);
-    Mesh& operator=(const Mesh& other);
+    TriMesh() { /* do nothing */ }
+    TriMesh(const TriMesh& other);
+    TriMesh& operator=(const TriMesh& other);
     Eigen::MatrixXd &vertices() { return v_; }
     Eigen::MatrixXi &faces() { return f_; }
     const Eigen::MatrixXd &const_vertices() const{ return v_; }
@@ -25,8 +25,8 @@ class Mesh {
     std::vector<std::vector<int>> adj_vertices_;
 };
 
-Mesh load_mesh(const std::string &filename);
-Mesh load_cube();
+TriMesh load_mesh(const std::string &filename);
+TriMesh load_cube();
 
 } // mesh
 } // makeshape

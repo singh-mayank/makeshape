@@ -10,13 +10,13 @@ set( lib "spatial" )
 set( headers 
     edges.hh
     octree.hh
-    mesh.hh
+    trimesh.hh
 )
 
 # source files
 set( sources
     octree.cc
-    mesh.cc
+    trimesh.cc
 )
 
 # copy headers to include directory

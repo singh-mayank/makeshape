@@ -23,7 +23,8 @@ class Octree {
   public:
     Octree(const size_t max_depth);
     ~Octree();
-    bool build(const std::vector<Eigen::Vector3d> &points);
+    bool build(const std::vector<Eigen::Vector3d> &points); // DELETE THIS, unittest
+    bool build(const Eigen::MatrixXd &points);
     size_t num_nodes() const;
     Edges get_edges() const;
   private:

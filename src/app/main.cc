@@ -8,7 +8,7 @@
 int main(int argc, char *argv[])
 {
     makeshape::app::App application;
-    makeshape::spatial::Mesh m;
+    makeshape::spatial::TriMesh m;
 
     if (argc < 2) {
         m = makeshape::spatial::load_cube();

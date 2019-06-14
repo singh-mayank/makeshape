@@ -1,6 +1,6 @@
 // Copyright MakeShape. 2019, All rights reserved.
 
-#include "mesh.hh"
+#include "trimesh.hh"
 
 #include <igl/opengl/glfw/Viewer.h>
 #include <igl/unproject_onto_mesh.h>
@@ -21,7 +21,7 @@ namespace app {
 class App {
   public:
     App();
-    void add_mesh(const spatial::Mesh &m);
+    void add_mesh(const spatial::TriMesh &m);
     void launch();
   private:
     App(const App& app) = delete;

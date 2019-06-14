@@ -6,6 +6,8 @@
 #include <cstdio>
 #include <list>
 #include <array>
+
+#include <cassert>
  
 namespace makeshape {
 namespace spatial {
@@ -16,6 +18,7 @@ using VertexPair = std::pair<Point, Point>;
 constexpr size_t DIM = 3;
 constexpr size_t N_VERTICES = 8;
 constexpr size_t N_EDGES = 12;
+constexpr size_t MAX_DEPTH = 8;
 
 struct NodeEdges {
     std::array<Point, N_VERTICES> v;
@@ -135,10 +138,10 @@ NodeEdges get_node_edges(const OctreeNode *n) {
         ne.e[6] = std::make_pair(6, 7);
         ne.e[7] = std::make_pair(7, 0);
 
-        ne.e[8]  = std::make_pair(1, 4);
-        ne.e[9]  = std::make_pair(2, 5);
-        ne.e[10] = std::make_pair(3, 6);
-        ne.e[11] = std::make_pair(4, 7);
+        ne.e[8]  = std::make_pair(0, 4);
+        ne.e[9]  = std::make_pair(1, 5);
+        ne.e[10] = std::make_pair(2, 6);
+        ne.e[11] = std::make_pair(3, 7);
     }
     return ne;
 }
@@ -191,6 +194,37 @@ bool Octree::build(const std::vector<Eigen::Vector3d> &points) {
     return true;
 }
 
+
+bool Octree::build(const Eigen::MatrixXd &points) {
+    const int rows = points.rows();
+    const int cols = points.cols();
+    assert(cols == DIM);
+    if (rows == 0 || max_depth_ < 0 || max_depth_ > MAX_DEPTH) {
+        return false;
+    }
+
+    // clear memory, if needed
+    if (root_ != nullptr) {
+        clear_tree(root_);
+        delete root_;
+        root_ = nullptr;
+    }
+
+    const Point center(0.5, 0.5, 0.5);
+    const Point extents(1, 1, 1);
+    for (int i = 0; i < rows; ++i) {
+        Point p;
+        for(int j = 0; j < DIM; ++j){
+            p(j) = points(i, j); 
+        }
+        root_ = insert(root_, p, center, extents, 0, max_depth_);
+    }
+
+    return true;
+}
+
+
+
 size_t Octree::num_nodes() const {
     return count_nodes(root_);
 }
@@ -233,6 +267,10 @@ Edges Octree::get_edges() const {
                 e.E(N_EDGES * i + j, 1) = ne[i].e[j].second;
             }
         }
+        e.C.resize(1, 3);
+        e.C(0, 0) = 1;
+        e.C(0, 1) = 1;
+        e.C(0, 2) = 1;
     }
     return e;
 }
