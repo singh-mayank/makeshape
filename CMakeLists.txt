@@ -83,3 +83,4 @@ file(MAKE_DIRECTORY ${data_dir})
 
 #----------------------------------------------------------------------
 add_subdirectory(src)
+#add_subdirectory(examples)
