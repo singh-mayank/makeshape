@@ -1,6 +1,6 @@
 # MakeShape
 
-Generated a triangle mesh from a set of points in space.
+Utilities for 3d shape manipulation.
 
 ## Compile
 
@@ -45,4 +45,3 @@ is `/path/to/makeshape/`.
 ## Recommendation
 We recommend using `ninja` instead of `make`. Download install `ninja` from here [
 https://ninja-build.org/ ]
-
