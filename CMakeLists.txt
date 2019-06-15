@@ -1,16 +1,17 @@
 #----------------------------------------------------------------------
-# 
+# makeshape 
 #----------------------------------------------------------------------
 cmake_minimum_required(VERSION 3.1)
 project("makeshape")
 enable_testing()
 
 #----------------------------------------------------------------------
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+# find cmake files here
 #----------------------------------------------------------------------
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 #----------------------------------------------------------------------
-# libigl
+# libigl flags
 #----------------------------------------------------------------------
 option(LIBIGL_WITH_OPENGL            "Use OpenGL"         ON)
 option(LIBIGL_WITH_OPENGL_GLFW       "Use GLFW"           ON)
@@ -59,7 +60,7 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
 endif()
 
 #----------------------------------------------------------------------
-# make directories
+# directories for bin, lib, tests, and data
 #----------------------------------------------------------------------
 # bin dir
 set( bin_dir "${CMAKE_BINARY_DIR}/bin" CACHE PATH "Path to executable" )
@@ -77,10 +78,26 @@ file(MAKE_DIRECTORY ${lib_dir})
 set( test_dir "${CMAKE_BINARY_DIR}/tests" CACHE PATH "Path to unittests" )
 file(MAKE_DIRECTORY ${test_dir})
 
-# test dir
+# data dir
 set( data_dir "${CMAKE_BINARY_DIR}/data" CACHE PATH "Path to data" )
 file(MAKE_DIRECTORY ${data_dir})
 
 #----------------------------------------------------------------------
+# copy data files in builds/data/
+#----------------------------------------------------------------------
+file(GLOB data_files "${CMAKE_SOURCE_DIR}/data/*.*")
+file(COPY ${data_files} DESTINATION ${data_dir}) 
+
+#----------------------------------------------------------------------
+# copy scripts into build
+#----------------------------------------------------------------------
+if (WIN32)
+    file(GLOB scripts "${CMAKE_SOURCE_DIR}/scripts/*.bat")
+elseif(UNIX)
+    file(GLOB scripts "${CMAKE_SOURCE_DIR}/scripts/*.sh")
+endif (WIN32)
+file(COPY ${scripts} DESTINATION ${CMAKE_BINARY_DIR}) 
+
+#----------------------------------------------------------------------
 add_subdirectory(src)
-#add_subdirectory(examples)
+add_subdirectory(examples)

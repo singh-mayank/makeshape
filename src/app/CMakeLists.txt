@@ -1,10 +1,10 @@
 #----------------------------------------------------------------------
-#
+# makeshape 
 #----------------------------------------------------------------------
 project ( ${CMAKE_PROJECT_NAME} )
 
-# executable 
-set( exe "makeshape_bin" )
+# library 
+set( lib "app" )
 
 # headers
 set( headers 
@@ -14,28 +14,27 @@ set( headers
 # source files
 set( sources
     app.cc
-    main.cc
 )
 
 # copy headers to include directory
 # file( COPY ${headers} DESTINATION ${inc} )
 
 # create lib
-add_executable( ${exe} "" )
-set_property(TARGET ${exe} PROPERTY CXX_STANDARD 11)
-target_sources( ${exe} 
+add_library( ${lib} "" )
+set_property(TARGET ${lib} PROPERTY CXX_STANDARD 11)
+target_sources( ${lib} 
     PRIVATE
         ${sources} 
         ${headers}
 )
 
-target_include_directories( ${exe}
+target_include_directories( ${lib}
     PUBLIC
         ./
         "spatial"
 )
 
-target_link_libraries( ${exe}
+target_link_libraries( ${lib}
     PRIVATE
         "spatial"
     PUBLIC
@@ -45,16 +44,9 @@ target_link_libraries( ${exe}
         igl::png # not needed.
 )
 
-# copies 'makeshape_bin' into bin_dir
-add_custom_command(TARGET ${exe} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${exe}> ${bin_dir}
-)
-
-
-# copies everything from data/ into build/data directory
-add_custom_command(TARGET ${exe} PRE_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_SOURCE_DIR}/data ${data_dir}
+# copies 'app' into lib_dir
+add_custom_command(TARGET ${lib} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${lib}> ${lib_dir}
 )
 
 # add_subdirectory( unittests )
