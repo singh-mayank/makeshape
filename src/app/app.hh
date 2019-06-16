@@ -24,14 +24,15 @@ namespace app {
 class App {
   public:
     App();
-    bool mousepress_callback(igl::opengl::glfw::Viewer &viewer, int button, int modifier);
-    void custom_menu_callback(igl::opengl::glfw::Viewer &viewer,
-                              igl::opengl::glfw::imgui::ImGuiMenu &menu );
     void add_mesh(const spatial::TriMesh &m);
+    void set_edges(const spatial::Edges &e);
     void launch() { viewer_.launch(); }
   private:
     App(const App& app) = delete;
     App& operator=(const App& other) = delete;
+    bool mousepress_callback(igl::opengl::glfw::Viewer &viewer, int button, int modifier);
+    void custom_menu_callback(igl::opengl::glfw::Viewer &viewer,
+                              igl::opengl::glfw::imgui::ImGuiMenu &menu );
     igl::opengl::glfw::Viewer viewer_;
     igl::opengl::glfw::imgui::ImGuiMenu menu_;
 };

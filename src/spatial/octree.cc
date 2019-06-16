@@ -42,7 +42,7 @@ size_t compute_child_index(const OctreeNode *n, const Point &p) {
     for (size_t i = 0; i < DIM; ++i) {
         const auto x = (p[i] - (c[i] - 0.5*e[i]))/e[i];
         if( std::round(x) ) {
-            index |= (1 << i);
+            index |= (1ULL << i);
         }
     }
     return index;
@@ -52,7 +52,7 @@ std::pair<Point, Point> compute_center_and_extents(const OctreeNode* n, const si
     Point center;
     const Point extents = 0.5*n->extents;
     for (size_t i = 0; i < DIM; ++i) {
-        center[i] = (child_index & (1 << i))? 
+        center[i] = (child_index & (1ULL << i))? 
             n->center[i] + 0.5*extents[i] : n->center[i] - 0.5*extents[i];
     }
     return std::make_pair(center, extents);
@@ -136,7 +136,7 @@ NodeEdges get_node_edges(const OctreeNode *n) {
         ne.e[4] = std::make_pair(4, 5);
         ne.e[5] = std::make_pair(5, 6);
         ne.e[6] = std::make_pair(6, 7);
-        ne.e[7] = std::make_pair(7, 0);
+        ne.e[7] = std::make_pair(7, 4);
 
         ne.e[8]  = std::make_pair(0, 4);
         ne.e[9]  = std::make_pair(1, 5);
@@ -196,8 +196,8 @@ bool Octree::build(const std::vector<Eigen::Vector3d> &points) {
 
 
 bool Octree::build(const Eigen::MatrixXd &points) {
-    const int rows = points.rows();
-    const int cols = points.cols();
+    const size_t rows = points.rows();
+    const size_t cols = points.cols();
     assert(cols == DIM);
     if (rows == 0 || max_depth_ < 0 || max_depth_ > MAX_DEPTH) {
         return false;

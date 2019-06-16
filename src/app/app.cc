@@ -31,5 +31,9 @@ void App::add_mesh(const spatial::TriMesh &m) {
     viewer_.data().set_face_based(true);
 }
 
+void App::set_edges(const spatial::Edges &e) {
+    viewer_.data().set_edges(e.P, e.E, e.C);
+}
+
 } // namespace app
 } // namespace makeshape

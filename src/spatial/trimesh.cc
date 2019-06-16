@@ -2,14 +2,16 @@
 
 #include "trimesh.hh"
 
-
 #pragma warning( push )
 #pragma warning( disable : 4018)
 #pragma warning( disable : 4244)
 #pragma warning( disable : 4996)
+#pragma warning( disable : 4267)
 #include <igl/readOBJ.h>
 #include <igl/adjacency_list.h>
 #pragma warning( pop ) 
+
+#include <limits>
 
 namespace {
   const Eigen::MatrixXd CUBE_VERTICES = (Eigen::MatrixXd(8,3)<<
@@ -55,6 +57,31 @@ TriMesh& TriMesh::operator=(const TriMesh& other) {
 void TriMesh::build_adjacent_vertices(){ 
     igl::adjacency_list(f_, adj_vertices_); 
 }
+
+// rescale vertices between (0, 0, 0) and (1, 1, 1)
+void TriMesh::rescale() {
+    using Point = Eigen::Vector3d;
+    Point min_pt, max_pt;
+    min_pt[0] = min_pt[1] = min_pt[2] = std::numeric_limits<double>::max();
+    max_pt[0] = max_pt[1] = max_pt[2] = std::numeric_limits<double>::min();
+    const size_t rows = v_.rows();
+    const size_t cols = v_.cols();
+    for (size_t r = 0; r < rows; ++r) {
+        for(size_t c = 0; c < 3; ++c) {
+            min_pt[c] = std::min(min_pt[c], v_(r, c));
+            max_pt[c] = std::max(max_pt[c], v_(r, c));
+        }
+    }
+
+    Point range = (max_pt - min_pt);
+    Point inv_range(1.0/range(0), 1.0/range(1), 1.0/range(2));
+    for (size_t r = 0; r < rows; ++r) {
+        for(size_t c = 0; c < 3; ++c) {
+            v_(r, c) = inv_range(c) * (v_(r, c) - min_pt(c));
+        }
+    }
+}
+
 
 TriMesh load_mesh(const std::string &filename) {
     TriMesh m;

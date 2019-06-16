@@ -2,6 +2,7 @@
 
 #include "app.hh"
 #include "octree.hh"
+#include "common.hh"
 
 //
 // launch application
@@ -19,6 +20,9 @@ int main(int argc, char *argv[])
 
     makeshape::spatial::Octree oc(3);
     oc.build(m.const_vertices());
+    printf("Octree Nodes: %zu\n", oc.num_nodes());
+    const auto edges = oc.get_edges();
+    application.set_edges(edges);
 
     application.add_mesh(m);
     application.launch();

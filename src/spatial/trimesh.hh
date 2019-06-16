@@ -19,6 +19,7 @@ class TriMesh {
     const Eigen::MatrixXi &const_faces() const{ return f_; }
     void build_adjacent_vertices();
     const std::vector<std::vector<int>> adjacent_vertices() const { return adj_vertices_; } 
+    void rescale();
   private:
     Eigen::MatrixXd v_;
     Eigen::MatrixXi f_;

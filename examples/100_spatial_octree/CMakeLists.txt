@@ -30,14 +30,16 @@ target_sources( ${exe}
 target_include_directories( ${exe}
     PRIVATE
         ./
-        "app"
+        "common"
         "spatial"
+        "app"
 )
 
 target_link_libraries( ${exe}
     PRIVATE
-        "app"
+        "common"
         "spatial"
+        "app"
 )
 
 # copies 'makeshape_bin' into bin_dir
