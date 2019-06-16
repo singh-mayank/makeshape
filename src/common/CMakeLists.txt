@@ -1,7 +1,7 @@
 #----------------------------------------------------------------------
-# common
+# makeshape | common
 #----------------------------------------------------------------------
-project ( ${CMAKE_PROJECT_NAME} )
+project(${CMAKE_PROJECT_NAME})
 
 # library 
 set( lib "common" )

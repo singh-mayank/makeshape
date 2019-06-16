@@ -2,9 +2,6 @@
 
 #include "app.hh"
 
-//
-// launch application
-// 
 int main(int argc, char *argv[])
 {
     makeshape::app::App application;
@@ -18,5 +15,6 @@ int main(int argc, char *argv[])
 
     application.add_mesh(m);
     application.launch();
+
     return 0;
 }

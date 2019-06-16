@@ -1,6 +1,6 @@
 # MakeShape
 ```
-C:.
+makeshape/src
 ¦   CMakeLists.txt
 ¦   README.md
 ¦
@@ -8,7 +8,6 @@ C:.
 ¦       app.cc
 ¦       app.hh
 ¦       CMakeLists.txt
-¦       main.cc
 ¦
 +---common
 ¦       CMakeLists.txt
