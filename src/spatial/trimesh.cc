@@ -58,7 +58,7 @@ void TriMesh::build_adjacent_vertices(){
     igl::adjacency_list(f_, adj_vertices_); 
 }
 
-// rescale vertices between (0, 0, 0) and (1, 1, 1)
+// rescale vertices between (0, 0, 0) and (1, 1, 1) 
 void TriMesh::rescale() {
     using Point = Eigen::Vector3d;
     Point min_pt, max_pt;
@@ -74,10 +74,10 @@ void TriMesh::rescale() {
     }
 
     Point range = (max_pt - min_pt);
-    Point inv_range(1.0/range(0), 1.0/range(1), 1.0/range(2));
+    double max_range = std::max(range[0], std::max(range[1], range[2]));
     for (size_t r = 0; r < rows; ++r) {
         for(size_t c = 0; c < 3; ++c) {
-            v_(r, c) = inv_range(c) * (v_(r, c) - min_pt(c));
+            v_(r, c) = (v_(r, c) - min_pt(c))/max_range;
         }
     }
 }
