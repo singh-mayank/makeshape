@@ -6,8 +6,9 @@
 #include <cstdio>
 #include <list>
 #include <array>
+#include <iostream>
 
-#include <cassert>
+// #include <cassert>
  
 namespace makeshape {
 namespace spatial {
@@ -68,6 +69,7 @@ OctreeNode* insert(OctreeNode *n,
     CHECK (curr_depth <= max_depth);
     if (n == nullptr) {
         n = new OctreeNode(center, extents);
+        n->depth = curr_depth;
     }
     if (curr_depth == max_depth) {
         n->points.push_back(p);
@@ -144,6 +146,22 @@ NodeEdges get_node_edges(const OctreeNode *n) {
         ne.e[11] = std::make_pair(3, 7);
     }
     return ne;
+}
+
+void print(const OctreeNode *n) {
+    Point min_pt{n->center - 0.5*n->extents};       
+    Point max_pt{n->center + 0.5*n->extents};
+    Eigen::Vector3d extents = max_pt - min_pt;
+    double vol = (extents[0] * extents[1] * extents[2]);
+    const std::string indent(2*n->depth, ' ');
+    printf("%s %zu | [%f, %f, %f] --> [%f, %f, %f] [%f] | %zu\n", 
+            indent.c_str(),
+            n->depth,
+            min_pt[0], min_pt[1], min_pt[2],
+            max_pt[0], max_pt[1], max_pt[2], 
+            vol,
+            n->points.size());
+
 }
 
 } // namespace
@@ -247,30 +265,57 @@ Edges Octree::get_edges() const {
             }
         }
     }
+    // build edges
     Edges e;
     {
         // vertices
         e.P.resize(ne.size()*N_VERTICES, DIM);
         for (size_t i = 0; i < ne.size(); ++i) {
             for(size_t j = 0; j < N_VERTICES; ++j) {
+                const size_t index = i*N_VERTICES + j;
                 for(size_t k = 0; k < DIM; ++k) {
-                    e.P(N_VERTICES * i + j, k) = ne[i].v[j][k];
+                    e.P(index, k) = ne[i].v[j][k];
                 }
             }
         }
-        // edges
+        // edges 
         constexpr size_t VERTICES_PER_EDGE = 2;
         e.E.resize(ne.size()*N_EDGES, VERTICES_PER_EDGE); // 2 vertices per edge
         for (size_t i = 0; i < ne.size(); ++i) {
+            const size_t offset = i*N_EDGES;
             for(size_t j = 0; j < N_EDGES; ++j) {
-                e.E(N_EDGES * i + j, 0) = ne[i].e[j].first;
-                e.E(N_EDGES * i + j, 1) = ne[i].e[j].second;
+                e.E(offset + j, 0) = ne[i].e[j].first + (i * 8);
+                e.E(offset + j, 1) = ne[i].e[j].second + (i * 8);
             }
         }
+        // color
         e.C.resize(1, 3);
         e.C(0, 0) = 1;
         e.C(0, 1) = 1;
         e.C(0, 2) = 1;
+        // print debug
+        // {
+        //     for (size_t i = 0; i < ne.size(); ++i) {
+        //         for(size_t j = 0; j < N_VERTICES; ++j) {
+        //             const size_t index = i*N_VERTICES + j;
+        //             printf("[%zu]: [%f, %f, %f]\n",
+        //                     index,
+        //                     e.P(index, 0),
+        //                     e.P(index, 1),
+        //                     e.P(index, 2));
+        //         }
+        //     }
+        //
+        //     for (size_t i = 0; i < ne.size(); ++i) {
+        //         for(size_t j = 0; j < N_EDGES; ++j) {
+        //             const size_t index = i*N_EDGES + j;
+        //             printf("[%zu]: [%i, %i]\n",
+        //                     index,
+        //                     e.E(index, 0),
+        //                     e.E(index, 1));
+        //         }
+        //     }
+        // }
     }
     return e;
 }

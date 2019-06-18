@@ -17,6 +17,7 @@ class OctreeNode {
     Eigen::Vector3d extents;
     OctreeNode *child[ MAX_CHILDREN ];
     std::vector<Eigen::Vector3d> points;
+    size_t depth;
 };
 
 class Octree {
