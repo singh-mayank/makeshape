@@ -13,4 +13,4 @@ Example using Octree:
     const auto edges = oc.get_edges();
     application.set_edges(edges);
 ```
-![Octree on a model of Cow](https://raw.githubusercontent.com/singh-mayank/makeshape/master/examples/100_spatial_octree/cow.png)
+![Octree on a model of Cow](https://raw.githubusercontent.com/singh-mayank/makeshape/master/imgs/octree_cow.png)
