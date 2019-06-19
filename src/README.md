@@ -38,7 +38,7 @@ src/
         ├── dual_contouring.cc
         └── dual_contouring.hh
 ```
-TODO
+### TODO
 - [ ] Octree with distance query (neighbours within radius)
 - [ ] Unittest for Octree distance query
 - [ ] Least-Squares Rigid Motion Using SVD
