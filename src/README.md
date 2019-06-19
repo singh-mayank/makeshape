@@ -1,45 +1,44 @@
 # MakeShape
 ```
 src/
-¿¿¿ app
-¿   ¿¿¿ app.cc
-¿   ¿¿¿ app.hh
-¿   ¿¿¿ CMakeLists.txt
-¿¿¿ CMakeLists.txt
-¿¿¿ common
-¿   ¿¿¿ CMakeLists.txt
-¿   ¿¿¿ common.cc
-¿   ¿¿¿ common.hh
-¿¿¿ icp
-¿   ¿¿¿ CMakeLists.txt
-¿   ¿¿¿ icp.cc
-¿   ¿¿¿ icp.hh
-¿¿¿ README.md
-¿¿¿ shapes
-¿   ¿¿¿ CMakeLists.txt
-¿¿¿ spatial
-¿   ¿¿¿ aabb.cc
-¿   ¿¿¿ aabb.hh
-¿   ¿¿¿ CMakeLists.txt
-¿   ¿¿¿ edges.hh
-¿   ¿¿¿ octree.cc
-¿   ¿¿¿ octree.hh
-¿   ¿¿¿ trimesh.cc
-¿   ¿¿¿ trimesh.hh
-¿   ¿¿¿ unittests
-¿       ¿¿¿ CMakeLists.txt
-¿       ¿¿¿ unittest_octree.cc
-¿¿¿ surface_reconstruction
-¿   ¿¿¿ CMakeLists.txt
-¿¿¿ triangulate
-    ¿¿¿ CMakeLists.txt
-    ¿¿¿ dual_contouring
-        ¿¿¿ CMakeLists.txt
-        ¿¿¿ dual_contouring.cc
-        ¿¿¿ dual_contouring.hh
+â”œâ”€â”€ app
+â”‚Â Â  â”œâ”€â”€ app.cc
+â”‚Â Â  â”œâ”€â”€ app.hh
+â”‚Â Â  â””â”€â”€ CMakeLists.txt
+â”œâ”€â”€ CMakeLists.txt
+â”œâ”€â”€ common
+â”‚Â Â  â”œâ”€â”€ CMakeLists.txt
+â”‚Â Â  â”œâ”€â”€ common.cc
+â”‚Â Â  â””â”€â”€ common.hh
+â”œâ”€â”€ icp
+â”‚Â Â  â”œâ”€â”€ CMakeLists.txt
+â”‚Â Â  â”œâ”€â”€ icp.cc
+â”‚Â Â  â””â”€â”€ icp.hh
+â”œâ”€â”€ README.md
+â”œâ”€â”€ shapes
+â”‚Â Â  â””â”€â”€ CMakeLists.txt
+â”œâ”€â”€ spatial
+â”‚Â Â  â”œâ”€â”€ aabb.cc
+â”‚Â Â  â”œâ”€â”€ aabb.hh
+â”‚Â Â  â”œâ”€â”€ CMakeLists.txt
+â”‚Â Â  â”œâ”€â”€ edges.hh
+â”‚Â Â  â”œâ”€â”€ octree.cc
+â”‚Â Â  â”œâ”€â”€ octree.hh
+â”‚Â Â  â”œâ”€â”€ trimesh.cc
+â”‚Â Â  â”œâ”€â”€ trimesh.hh
+â”‚Â Â  â””â”€â”€ unittests
+â”‚Â Â      â”œâ”€â”€ CMakeLists.txt
+â”‚Â Â      â””â”€â”€ unittest_octree.cc
+â”œâ”€â”€ surface_reconstruction
+â”‚Â Â  â””â”€â”€ CMakeLists.txt
+â””â”€â”€ triangulate
+    â”œâ”€â”€ CMakeLists.txt
+    â””â”€â”€ dual_contouring
+        â”œâ”€â”€ CMakeLists.txt
+        â”œâ”€â”€ dual_contouring.cc
+        â””â”€â”€ dual_contouring.hh
 ```
 TODO
-[ ] Octree with distance query (neighbours within radius)
-[ ] Unittest for Octree distance query
-[ ] Least-Squares Rigid Motion Using SVD
-[ ] ...
+- [ ] Octree with distance query (neighbours within radius)
+- [ ] Unittest for Octree distance query
+- [ ] Least-Squares Rigid Motion Using SVD
