@@ -7,8 +7,7 @@
 namespace makeshape {
 namespace spatial {
 //
-// AABB with center and extents, here
-// min_pt = center - 0.5*extents | max_pt = center + 0.5*extents
+// AABB with center and extents
 //
 class AABB {
   public:

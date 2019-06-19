@@ -25,7 +25,7 @@ class OctreeNode {
     OctreeNode *child_[ MAX_CHILDREN ];
     std::vector<Eigen::Vector3d> points_;
     size_t depth_;
-};
+}; // OctreeNode
 
 class Octree {
   public:
@@ -38,7 +38,7 @@ class Octree {
   private:
     OctreeNode *root_;
     const size_t max_depth_;
-}; // octree
+}; // Octree
 
 } // spatial 
 } // makeshape

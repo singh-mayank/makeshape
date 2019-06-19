@@ -7,8 +7,6 @@
 #include <list>
 #include <array>
 #include <iostream>
-
-// #include <cassert>
  
 namespace makeshape {
 namespace spatial {
