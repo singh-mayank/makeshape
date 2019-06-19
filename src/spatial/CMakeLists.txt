@@ -8,6 +8,7 @@ set( lib "spatial" )
 
 # headers
 set( headers 
+    aabb.hh
     edges.hh
     octree.hh
     trimesh.hh
@@ -15,6 +16,7 @@ set( headers
 
 # source files
 set( sources
+    aabb.cc
     octree.cc
     trimesh.cc
 )

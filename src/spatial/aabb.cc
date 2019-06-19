@@ -5,26 +5,22 @@
 namespace makeshape {
 namespace spatial {
 
-AABB::AABB() {
-    center = Eigen::Vector3d{0, 0, 0};
-    extents = Eigen::Vector3d{1, 1, 1};
-}
 AABB::AABB(const Eigen::Vector3d &c, const Eigen::Vector3d &e) {
-    center = c;
-    extents = e;
+    center_ = c;
+    extents_ = e;
 }
 
 AABB::AABB(const AABB &other) {
-    if (this != &other) {
-        center = other.center;
-        extents = other.extents;
-    }
-    return *this;
+    center_ = other.const_center();
+    extents_ = other.const_extents();
 }
 
-AABB::AABB(const AABB &&other) {
-    center(std::move(other.center));
-    extents(std::move(other.extents));
+AABB& AABB::operator=(const AABB &other) {
+    if (this != &other) {
+        center_ = other.const_center();
+        extents_ = other.const_extents();
+    }
+    return *this;
 }
 
 bool AABB::include(const Eigen::Vector3d &p) {

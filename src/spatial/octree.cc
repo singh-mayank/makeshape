@@ -27,8 +27,8 @@ struct NodeEdges {
 };
 
 bool inside(const OctreeNode *n, const Point &p) {
-    const Point min_pt = n->center - n->extents;
-    const Point max_pt = n->center + n->extents;
+    const Point min_pt = n->min_pt();
+    const Point max_pt = n->max_pt();
     for(size_t i = 0; i < DIM; ++i) {
         if (p[i] < min_pt[i]) { return false; }
         if (p[i] > max_pt[i]) { return false; }
@@ -38,8 +38,8 @@ bool inside(const OctreeNode *n, const Point &p) {
 
 size_t compute_child_index(const OctreeNode *n, const Point &p) {
     size_t index = 0;
-    const auto c = n->center;
-    const auto e = n->extents;
+    const auto c = n->box_.const_center();
+    const auto e = n->box_.const_extents();
     for (size_t i = 0; i < DIM; ++i) {
         const auto x = (p[i] - (c[i] - 0.5*e[i]))/e[i];
         if( std::round(x) ) {
@@ -49,42 +49,39 @@ size_t compute_child_index(const OctreeNode *n, const Point &p) {
     return index;
 }
 
-std::pair<Point, Point> compute_center_and_extents(const OctreeNode* n, const size_t child_index) {
-    Point center;
-    const Point extents = 0.5*n->extents;
+AABB compute_child_aabb(const OctreeNode* n, const size_t child_index) {
+    Point child_center;
+    const Point child_extents = 0.5*n->box_.const_extents();
+    const Point center = n->box_.const_center();
     for (size_t i = 0; i < DIM; ++i) {
-        center[i] = (child_index & (1ULL << i))? 
-            n->center[i] + 0.5*extents[i] : n->center[i] - 0.5*extents[i];
+        child_center[i] = (child_index & (1ULL << i))? 
+            center[i] + 0.5*child_extents[i] : 
+            center[i] - 0.5*child_extents[i];
     }
-    return std::make_pair(center, extents);
+    return AABB(child_center, child_extents);
 }
 
 
 OctreeNode* insert(OctreeNode *n, 
         const Point &p, 
-        const Point &center, 
-        const Point &extents, 
+        const AABB &box,
         const size_t curr_depth, 
         const size_t max_depth) {
     CHECK (curr_depth <= max_depth);
     if (n == nullptr) {
-        n = new OctreeNode(center, extents);
-        n->depth = curr_depth;
+        n = new OctreeNode(box, curr_depth);
     }
     if (curr_depth == max_depth) {
-        n->points.push_back(p);
+        n->points_.push_back(p);
     } else {
         const size_t index = compute_child_index(n, p); 
-        Point child_center, child_extents;
-        if (n->child[index] == nullptr) {
-            const auto center_and_extents = compute_center_and_extents(n, index);
-            child_center = center_and_extents.first;
-            child_extents = center_and_extents.second;
+        AABB child_box;
+        if (n->child_[index] == nullptr) {
+            child_box = compute_child_aabb(n, index);
         } 
-        n->child[index] = insert(n->child[index], 
+        n->child_[index] = insert(n->child_[index], 
                 p, 
-                child_center, 
-                child_extents, 
+                child_box,
                 curr_depth+1, 
                 max_depth);
     }
@@ -96,11 +93,11 @@ void clear_tree(OctreeNode *n) {
         return;
     } 
     for(int i = 0; i < OctreeNode::MAX_CHILDREN; ++i) {
-        clear_tree(n->child[i]);
-        delete n->child[i];
-        n->child[i] = nullptr;  
+        clear_tree(n->child_[i]);
+        delete n->child_[i];
+        n->child_[i] = nullptr;  
     }
-    n->points.clear();
+    n->points_.clear();
 }
 
 size_t count_nodes(const OctreeNode *n) {
@@ -109,7 +106,7 @@ size_t count_nodes(const OctreeNode *n) {
     }
     size_t c = 1;
     for(int i = 0; i < OctreeNode::MAX_CHILDREN; ++i) {
-        c += count_nodes(n->child[i]);
+        c += count_nodes(n->child_[i]);
     }
     return c;
 }
@@ -117,8 +114,8 @@ size_t count_nodes(const OctreeNode *n) {
 NodeEdges get_node_edges(const OctreeNode *n) {
     NodeEdges ne;
     {
-        Point min_pt{n->center - 0.5*n->extents};       
-        Point max_pt{n->center + 0.5*n->extents};
+        Point min_pt = n->min_pt();
+        Point max_pt = n->max_pt();
         // bottom
         ne.v[0] = min_pt;
         ne.v[1] = Point(max_pt[0], min_pt[1], min_pt[2]);
@@ -149,34 +146,42 @@ NodeEdges get_node_edges(const OctreeNode *n) {
 }
 
 void print(const OctreeNode *n) {
-    Point min_pt{n->center - 0.5*n->extents};       
-    Point max_pt{n->center + 0.5*n->extents};
+    Point min_pt = n->min_pt();
+    Point max_pt = n->max_pt();
     Eigen::Vector3d extents = max_pt - min_pt;
     double vol = (extents[0] * extents[1] * extents[2]);
-    const std::string indent(2*n->depth, ' ');
+    const std::string indent(2*n->depth_, ' ');
     printf("%s %zu | [%f, %f, %f] --> [%f, %f, %f] [%f] | %zu\n", 
             indent.c_str(),
-            n->depth,
+            n->depth_,
             min_pt[0], min_pt[1], min_pt[2],
             max_pt[0], max_pt[1], max_pt[2], 
             vol,
-            n->points.size());
+            n->points_.size());
 
 }
 
 } // namespace
 
+//
+// OctreeNode
+//
 OctreeNode::OctreeNode() {
-    OctreeNode(Eigen::Vector3d(0.5, 0.5, 0.5), Eigen::Vector3d(1, 1, 1));
-}
-OctreeNode::OctreeNode(const Eigen::Vector3d& c, const Eigen::Vector3d& e) {
-    center = c;
-    extents = e;
-    for(size_t i = 0; i < MAX_CHILDREN; ++i) {
-        child[i] = nullptr;
-    }
+    OctreeNode(AABB(Eigen::Vector3d(0.5, 0.5, 0.5), Eigen::Vector3d(1, 1, 1)), 0);
 }
 
+OctreeNode::OctreeNode(const AABB &box, const size_t depth) {
+    box_ = box;
+    for(size_t i = 0; i < MAX_CHILDREN; ++i) {
+        child_[i] = nullptr;
+    }
+    depth_ = depth;
+}
+
+
+//
+// Octree
+//
 Octree::Octree(const size_t max_depth) 
     : root_(nullptr)
     , max_depth_(max_depth) {
@@ -190,36 +195,6 @@ Octree::~Octree() {
         root_ = nullptr;
     }
 }
-
-bool Octree::build(const Eigen::MatrixXd &points) {
-    const size_t rows = points.rows();
-    const size_t cols = points.cols();
-    assert(cols == DIM);
-    if (rows == 0 || max_depth_ < 0 || max_depth_ > MAX_DEPTH) {
-        return false;
-    }
-
-    // clear memory, if needed
-    if (root_ != nullptr) {
-        clear_tree(root_);
-        delete root_;
-        root_ = nullptr;
-    }
-
-    const Point center(0.5, 0.5, 0.5);
-    const Point extents(1, 1, 1);
-    for (int i = 0; i < rows; ++i) {
-        Point p;
-        for(int j = 0; j < DIM; ++j){
-            p(j) = points(i, j); 
-        }
-        root_ = insert(root_, p, center, extents, 0, max_depth_);
-    }
-
-    return true;
-}
-
-
 
 size_t Octree::num_nodes() const {
     return count_nodes(root_);
@@ -238,8 +213,8 @@ Edges Octree::get_edges() const {
         q.pop_front();
         ne.emplace_back(get_node_edges(curr));
         for(size_t i = 0; i < OctreeNode::MAX_CHILDREN; ++i) {
-            if (curr->child[i] != nullptr) {
-                q.push_back(curr->child[i]);
+            if (curr->child_[i] != nullptr) {
+                q.push_back(curr->child_[i]);
             }
         }
     }
@@ -296,6 +271,44 @@ Edges Octree::get_edges() const {
         // }
     }
     return e;
+}
+
+bool Octree::build(const Eigen::MatrixXd &points) {
+    const size_t rows = points.rows();
+    const size_t cols = points.cols();
+    assert(cols == DIM);
+    if (rows == 0 || max_depth_ < 0 || max_depth_ > MAX_DEPTH) {
+        return false;
+    }
+
+    // clear memory, if needed
+    if (root_ != nullptr) {
+        clear_tree(root_);
+        delete root_;
+        root_ = nullptr;
+    }
+
+    const Point center(0.5, 0.5, 0.5);
+    const Point extents(1, 1, 1);
+    const AABB box(center, extents);
+    for (int i = 0; i < rows; ++i) {
+        Point p;
+        for(int j = 0; j < DIM; ++j){
+            p(j) = points(i, j); 
+        }
+        root_ = insert(root_, p, box, 0, max_depth_);
+    }
+
+    return true;
+}
+
+const Eigen::MatrixXd neighbours(const Eigen::Vector3d &p, const double radius) {
+    Eigen::MatrixXd pts;
+
+
+
+
+    return pts;
 }
 
 
