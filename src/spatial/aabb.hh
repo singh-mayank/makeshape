@@ -27,7 +27,7 @@ class AABB {
     Eigen::Vector3d extents_;
 }; // AABB
 
-//static AABB build_aabb(const std::vector<Eigen::Vector3d>  &points);
+//static AABB build_aabb(const Eigen::Matrixd &points);
 
 
 } // spatial 

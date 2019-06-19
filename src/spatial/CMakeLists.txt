@@ -9,7 +9,9 @@ set( lib "spatial" )
 # headers
 set( headers 
     aabb.hh
+    bsphere.hh
     edges.hh
+    intersections.hh
     octree.hh
     trimesh.hh
 )
@@ -17,6 +19,8 @@ set( headers
 # source files
 set( sources
     aabb.cc
+    bsphere.cc
+    intersections.cc
     octree.cc
     trimesh.cc
 )
