@@ -191,28 +191,6 @@ Octree::~Octree() {
     }
 }
 
-bool Octree::build(const std::vector<Eigen::Vector3d> &points) {
-    if (points.empty() || max_depth_ < 0 || max_depth_ > 8) {
-        return false;
-    }
-
-    if (root_ != nullptr) {
-        clear_tree(root_);
-        delete root_;
-        root_ = nullptr;
-    }
-
-    const Point center(0.5, 0.5, 0.5);
-    const Point extents(1, 1, 1);
-    const size_t nv = points.size();
-    for (size_t i = 0; i < nv; ++i) {
-        const Point &p = points[i]; 
-        root_ = insert(root_, p, center, extents, 0, max_depth_);
-    }
-    return true;
-}
-
-
 bool Octree::build(const Eigen::MatrixXd &points) {
     const size_t rows = points.rows();
     const size_t cols = points.cols();
