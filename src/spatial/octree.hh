@@ -9,7 +9,8 @@
 //
 // TODO(mayank): replace explicit points with point indices
 // TODO(mayank): also, pass shared_ptr to the points, save a pointer in octree
-//
+// 
+// TODO(mayank): use 'union' for points_ or child_ for OctreeNode
 
 namespace makeshape {
 namespace spatial {

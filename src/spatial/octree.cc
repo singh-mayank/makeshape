@@ -1,12 +1,14 @@
 // Copyright MakeShape. 2019, All rights reserved.
 
 #include "octree.hh"
+#include "bsphere.hh"
+#include "intersections.hh"
 #include "common.hh"
 #include <cstdlib>
 #include <cstdio>
 #include <list>
 #include <array>
-#include <iostream>
+#include <queue>
  
 namespace makeshape {
 namespace spatial {
@@ -300,13 +302,40 @@ bool Octree::build(const Eigen::MatrixXd &points) {
     return true;
 }
 
-const Eigen::MatrixXd neighbours(const Eigen::Vector3d &p, const double radius) {
-    Eigen::MatrixXd pts;
+const Eigen::MatrixXd Octree::neighbours(const Eigen::Vector3d &p, const double radius) {
+    const double r2 = (radius * radius);
+    BSphere bsp(p, radius);   
+    std::vector<Eigen::Vector3d> pts;
+    std::queue<OctreeNode*> q;
+    q.push(root_);
+    while (!q.empty()) {
+        const auto curr_node = q.front();
+        q.pop();
+        if (curr_node == nullptr ){
+            continue;
+        }
 
+        if (intersects(curr_node->box_, bsp)) {
+            if (curr_node->points_.empty()) {
+                for (size_t i=0; i<OctreeNode::MAX_CHILDREN; ++i) {
+                    q.push(curr_node->child_[i]);
+                }
+            } else {
+                for (const Eigen::Vector3d &each_p : curr_node->points_) {
+                    if ((each_p - p).squaredNorm() < r2) {
+                        pts.emplace_back(each_p);
+                    }
+                }
+            }
+        }
+    }
 
-
-
-    return pts;
+    // convert points to matrix
+    Eigen::MatrixXd ret(pts.size(), 3);
+    for(size_t i = 0; i < pts.size(); ++i) {
+        ret.row(i) = pts.at(i);
+    }
+    return ret;
 }
 
 
