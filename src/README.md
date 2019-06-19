@@ -39,6 +39,9 @@ src/
         └── dual_contouring.hh
 ```
 ### TODO
+- [ ] Intersection queries for AABB/AABB, and BSphere/BSphere
+- [ ] Ray/Triangle, and Ray/Plane intersection
+- [ ] Ray/Plane distance, Point/Triangle closest/distance
 - [ ] Octree with distance query (neighbours within radius)
 - [ ] Unittest for Octree distance query
 - [ ] Least-Squares Rigid Motion Using SVD
