@@ -42,6 +42,7 @@ src/
 - [ ] Intersection queries for AABB/AABB, and BSphere/BSphere
 - [ ] Ray/Triangle, and Ray/Plane intersection
 - [ ] Ray/Plane distance, Point/Triangle closest/distance
-- [ ] Octree with distance query (neighbours within radius)
+- [x] Octree with distance query (neighbours within radius)
+    - [ ] Octree neighbours - needs unittests
 - [ ] Unittest for Octree distance query
 - [ ] Least-Squares Rigid Motion Using SVD
