@@ -45,10 +45,7 @@ add_custom_command(TARGET ${test} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${test}> ${test_dir}
 )
 
-add_test(NAME ${test} COMMAND ${test_dir}/${test} )
-
-# look at the following ... 
-# add_test(NAME ${test} 
-#            COMMAND ${test_dir}/${test}
-#            WORKING_DIRECTORY ${data_dir}
-# )
+add_test(NAME ${test} 
+           COMMAND ${test_dir}/${test}
+           WORKING_DIRECTORY ${data_dir}
+)
