@@ -2,6 +2,12 @@
 
 Utilities for 3d shape manipulation.
 
+## Implements:
+* Octree for neighbourhood queries
+* [ Least-Squares Rigid Motion Using SVD ](https://igl.ethz.ch/projects/ARAP/svd_rot.pdf)
+* 
+
+
 ## Compile
 
 Compile this project using the standard cmake routine:
