@@ -22,9 +22,13 @@ combined*v = A*B*C*D*E*v = A*(B*(C*(D*(E*v))))
 
 */
 
-Eigen::Affine3d compute_icp() {
+Eigen::Affine3d compute_icp(const spatial::TriMesh &m1, const spatial::TriMesh &m2) { 
     //Eigen::Transform<float, 3, Eigen::Affine> combined;
     
+    // compute this tomorrow...
+
+
+
     Eigen::Affine3d t;
     return t;
 }
