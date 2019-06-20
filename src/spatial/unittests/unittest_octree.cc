@@ -34,27 +34,41 @@ TEST(Octree, neighbours)
     makeshape::spatial::TriMesh m = makeshape::spatial::load_mesh("bunny.obj");
     m.rescale();
 
-    const Eigen::Vector3d p(0.1, 0.1, 0.1);
-    constexpr double radius = 0.3;
-
-    // octree
     makeshape::spatial::Octree oc(4);
     oc.build(m.const_vertices());
-    const auto nearby = oc.neighbours(p, radius);
+    
+    const std::vector<Eigen::Vector3d> pts{
+        Eigen::Vector3d{0, 0, 0},
+        Eigen::Vector3d{1, 0, 0},
+        Eigen::Vector3d{0, 1, 0},
+        Eigen::Vector3d{1, 1, 0},
+        Eigen::Vector3d{0, 0, 1},
+        Eigen::Vector3d{1, 0, 1},
+        Eigen::Vector3d{0, 1, 1},
+        Eigen::Vector3d{1, 1, 1}};
 
-    // brute force
-    const double r2 = (radius * radius);
-    int count = 0;
-    const auto vertices = m.const_vertices();
-    for (int i = 0; i < vertices.rows(); ++i) {
-        Eigen::Vector3d v = vertices.row(i);
-        double dist = (v - p).squaredNorm();
-        if (dist < r2) {
-            ++count;
+    for(const auto &p : pts) {
+        constexpr double radius = 0.75;
+
+        // expected via octree
+        const auto nearby_pts = oc.neighbours(p, radius);
+        const size_t expected = nearby_pts.rows();
+
+        // actual via brute force
+        const double r2 = (radius * radius);
+        size_t actual = 0;
+        const auto vertices = m.const_vertices();
+        for (int i = 0; i < vertices.rows(); ++i) {
+            Eigen::Vector3d v = vertices.row(i);
+            double dist = (v - p).squaredNorm();
+            if (dist < r2) {
+                ++actual;
+            }
         }
+        
+        // check
+        EXPECT_EQ(actual, expected);
     }
-    // printf("%i == %li\n", count, nearby.rows());
-    EXPECT_EQ(count, nearby.rows());
 }
 
 int main(int argc, char **argv)
