@@ -20,6 +20,7 @@ class TriMesh {
     void build_adjacent_vertices();
     const std::vector<std::vector<int>> adjacent_vertices() const { return adj_vertices_; } 
     void rescale();
+    Eigen::Vector3d centroid() const;
   private:
     Eigen::MatrixXd v_;
     Eigen::MatrixXi f_;

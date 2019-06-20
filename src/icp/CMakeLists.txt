@@ -8,12 +8,12 @@ set( lib "icp" )
 
 # headers
 set( headers 
-    icp.hh
+    least_sq_rigid_motion.hh
 )
 
 # source files
 set( sources
-    icp.cc
+    least_sq_rigid_motion.cc
 )
 
 # copy headers to include directory
@@ -29,13 +29,16 @@ target_sources( ${lib}
 )
 
 target_include_directories( ${lib}
+    PRIVATE
+        "common"
+        "spatial"
     PUBLIC
         ./
-        "spatial"
 )
 
 target_link_libraries( ${lib}
     PRIVATE
+        "common"
         "spatial"
     PUBLIC
         igl::core 

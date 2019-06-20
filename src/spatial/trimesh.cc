@@ -82,6 +82,11 @@ void TriMesh::rescale() {
     }
 }
 
+Eigen::Vector3d TriMesh::centroid() const {
+    Eigen::Vector3d centroid = v_.colwise().sum();
+    centroid *= (1.0/static_cast<float>(v_.rows()));
+    return centroid;
+}
 
 TriMesh load_mesh(const std::string &filename) {
     TriMesh m;
