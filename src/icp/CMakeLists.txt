@@ -49,4 +49,4 @@ add_custom_command(TARGET ${lib} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${lib}> ${lib_dir}
 )
 
-# add_subdirectory( unittests )
+add_subdirectory( unittests )
