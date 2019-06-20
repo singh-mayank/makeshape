@@ -46,3 +46,9 @@ add_custom_command(TARGET ${test} POST_BUILD
 )
 
 add_test(NAME ${test} COMMAND ${test_dir}/${test} )
+
+# look at the following ... 
+# add_test(NAME ${test} 
+#            COMMAND ${test_dir}/${test}
+#            WORKING_DIRECTORY ${data_dir}
+# )
