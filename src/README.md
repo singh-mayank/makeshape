@@ -1,61 +1,54 @@
 # MakeShape
 ```
 src/
-¦   CMakeLists.txt
-¦   README.md
-¦
+Â¦   CMakeLists.txt
+Â¦   README.md
+Â¦
 +---app
-¦       app.cc
-¦       app.hh
-¦       CMakeLists.txt
-¦
+Â¦       app.cc
+Â¦       app.hh
+Â¦       CMakeLists.txt
+Â¦
 +---common
-¦       CMakeLists.txt
-¦       common.cc
-¦       common.hh
-¦
+Â¦       CMakeLists.txt
+Â¦       common.cc
+Â¦       common.hh
+Â¦
 +---icp
-¦       CMakeLists.txt
-¦       icp.cc
-¦       icp.hh
-¦
+Â¦       CMakeLists.txt
+Â¦       icp.cc
+Â¦       icp.hh
+Â¦
 +---shapes
-¦       CMakeLists.txt
-¦
+Â¦       CMakeLists.txt
+Â¦
 +---spatial
-¦   ¦   aabb.cc
-¦   ¦   aabb.hh
-¦   ¦   bsphere.cc
-¦   ¦   bsphere.hh
-¦   ¦   CMakeLists.txt
-¦   ¦   edges.hh
-¦   ¦   intersections.cc
-¦   ¦   intersections.hh
-¦   ¦   octree.cc
-¦   ¦   octree.hh
-¦   ¦   trimesh.cc
-¦   ¦   trimesh.hh
-¦   ¦
-¦   +---unittests
-¦           CMakeLists.txt
-¦           unittest_octree.cc
-¦
+Â¦   Â¦   aabb.cc
+Â¦   Â¦   aabb.hh
+Â¦   Â¦   bsphere.cc
+Â¦   Â¦   bsphere.hh
+Â¦   Â¦   CMakeLists.txt
+Â¦   Â¦   edges.hh
+Â¦   Â¦   intersections.cc
+Â¦   Â¦   intersections.hh
+Â¦   Â¦   octree.cc
+Â¦   Â¦   octree.hh
+Â¦   Â¦   trimesh.cc
+Â¦   Â¦   trimesh.hh
+Â¦   Â¦
+Â¦   +---unittests
+Â¦           CMakeLists.txt
+Â¦           unittest_octree.cc
+Â¦
 +---surface_reconstruction
-¦       CMakeLists.txt
-¦
+Â¦       CMakeLists.txt
+Â¦
 +---triangulate
-    ¦   CMakeLists.txt
-    ¦
+    Â¦   CMakeLists.txt
+    Â¦
     +---dual_contouring
             CMakeLists.txt
             dual_contouring.cc
             dual_contouring.hh
 
 ```
-### TODO
-- [ ] Intersection queries for AABB/AABB, and BSphere/BSphere
-- [ ] Ray/Triangle, and Ray/Plane intersection
-- [ ] Ray/Plane distance, Point/Triangle closest/distance
-- [x] Octree with distance query (neighbours within radius)
-    - [x] Octree neighbours - needs unittests
-- [ ] Least-Squares Rigid Motion Using SVD
