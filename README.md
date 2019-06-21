@@ -3,8 +3,13 @@
 Utilities for 3d shape manipulation.
 
 ## Implements:
+
+#### Algorithms:
 * Octree for neighbourhood queries
-* [ Least-Squares Rigid Motion Using SVD ](https://igl.ethz.ch/projects/ARAP/svd_rot.pdf)
+* 
+
+#### Papers
+* [ Least-Squares Rigid Motion Using SVD, by Olga Sorkine-Hornung and Michael Rabinovich ](https://igl.ethz.ch/projects/ARAP/svd_rot.pdf)
 * 
 
 
