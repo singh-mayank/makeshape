@@ -1,54 +1,63 @@
 # MakeShape
 ```
 src/
-Â¦   CMakeLists.txt
-Â¦   README.md
-Â¦
+¦   CMakeLists.txt
+¦   README.md
+¦
 +---app
-Â¦       app.cc
-Â¦       app.hh
-Â¦       CMakeLists.txt
-Â¦
+¦       app.cc
+¦       app.hh
+¦       CMakeLists.txt
+¦
 +---common
-Â¦       CMakeLists.txt
-Â¦       common.cc
-Â¦       common.hh
-Â¦
+¦       CMakeLists.txt
+¦       common.cc
+¦       common.hh
+¦
 +---icp
-Â¦       CMakeLists.txt
-Â¦       icp.cc
-Â¦       icp.hh
-Â¦
+¦   ¦   CMakeLists.txt
+¦   ¦   least_sq_rigid_motion.cc
+¦   ¦   least_sq_rigid_motion.hh
+¦   ¦
+¦   +---unittests
+¦           CMakeLists.txt
+¦           unittest_least_sq.cc
+¦
 +---shapes
-Â¦       CMakeLists.txt
-Â¦
+¦       CMakeLists.txt
+¦
 +---spatial
-Â¦   Â¦   aabb.cc
-Â¦   Â¦   aabb.hh
-Â¦   Â¦   bsphere.cc
-Â¦   Â¦   bsphere.hh
-Â¦   Â¦   CMakeLists.txt
-Â¦   Â¦   edges.hh
-Â¦   Â¦   intersections.cc
-Â¦   Â¦   intersections.hh
-Â¦   Â¦   octree.cc
-Â¦   Â¦   octree.hh
-Â¦   Â¦   trimesh.cc
-Â¦   Â¦   trimesh.hh
-Â¦   Â¦
-Â¦   +---unittests
-Â¦           CMakeLists.txt
-Â¦           unittest_octree.cc
-Â¦
+¦   ¦   aabb.cc
+¦   ¦   aabb.hh
+¦   ¦   bsphere.cc
+¦   ¦   bsphere.hh
+¦   ¦   CMakeLists.txt
+¦   ¦   edges.hh
+¦   ¦   intersections.cc
+¦   ¦   intersections.hh
+¦   ¦   octree.cc
+¦   ¦   octree.hh
+¦   ¦   trimesh.cc
+¦   ¦   trimesh.hh
+¦   ¦
+¦   +---unittests
+¦           CMakeLists.txt
+¦           unittest_octree.cc
+¦
 +---surface_reconstruction
-Â¦       CMakeLists.txt
-Â¦
+¦       CMakeLists.txt
+¦
 +---triangulate
-    Â¦   CMakeLists.txt
-    Â¦
+    ¦   CMakeLists.txt
+    ¦
     +---dual_contouring
+    ¦       CMakeLists.txt
+    ¦       dual_contouring.cc
+    ¦       dual_contouring.hh
+    ¦
+    +---marching_cubes
             CMakeLists.txt
-            dual_contouring.cc
-            dual_contouring.hh
+            marching_cubes.cc
+            marching_cubes.hh
 
 ```
