@@ -26,6 +26,10 @@ class OctreeNode {
     OctreeNode *child_[ MAX_CHILDREN ];
     std::vector<Eigen::Vector3d> points_;
     size_t depth_;
+
+    // location id
+
+
 }; // OctreeNode
 
 class Octree {

@@ -4,14 +4,14 @@ Utilities for 3d shape manipulation.
 
 ## Implements:
 
-#### Algorithms:
-* Octree for neighbourhood queries
-* 
-
 #### Papers
 * [ Least-Squares Rigid Motion Using SVD, by Olga Sorkine-Hornung and Michael Rabinovich ](https://igl.ethz.ch/projects/ARAP/svd_rot.pdf)
-* 
-
+*
+ 
+#### Algorithms:
+* Octree for neighbourhood queries.
+* Marching Cubes (borrowed as-is via Paul Bourke, available at http://paulbourke.net/geometry/polygonise/).
+* Intersections: AABB/BSphere, AABB/AABB, BSphere/BSphere.
 
 ## Compile
 

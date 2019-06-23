@@ -237,8 +237,10 @@ Edges Octree::get_edges() const {
         for (size_t i = 0; i < ne.size(); ++i) {
             const size_t offset = i*N_EDGES;
             for(size_t j = 0; j < N_EDGES; ++j) {
-                e.E(offset + j, 0) = ne[i].e[j].first + (i * 8);
-                e.E(offset + j, 1) = ne[i].e[j].second + (i * 8);
+                int row = static_cast<int>(offset + j);
+                int ii = static_cast<int>(i * 8);
+                e.E(row, 0) = ne[i].e[j].first + (ii);
+                e.E(row, 1) = ne[i].e[j].second + (ii);
             }
         }
         // color
