@@ -13,6 +13,12 @@ class RegularGrid {
   public:
     RegularGrid(const size_t max_depth);
     bool build();
+
+    //TODO(mayank): 
+    // - build edges for visualization
+    // - distance field for a mesh
+    // - inside/outside field for a mesh
+    // - 
   private:
     const size_t max_depth_;
 }; // RegularGrid
