@@ -17,7 +17,6 @@ int main(int argc, char *argv[])
     } else {
         m = makeshape::spatial::load_mesh(std::string(argv[1]));
     }
-    m.rescale();
     application.add_mesh(m);
 
     // octree

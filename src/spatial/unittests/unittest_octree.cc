@@ -32,7 +32,6 @@ TEST(Octree, neighbours)
 {
     // mesh
     makeshape::spatial::TriMesh m = makeshape::spatial::load_mesh("bunny.obj");
-    m.rescale();
 
     makeshape::spatial::Octree oc(4);
     oc.build(m.const_vertices());

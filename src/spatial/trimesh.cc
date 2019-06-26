@@ -1,6 +1,7 @@
 // Copyright MakeShape. 2019, All rights reserved.
 
 #include "trimesh.hh"
+#include "common.hh"
 
 #pragma warning( push )
 #pragma warning( disable : 4018)
@@ -54,12 +55,22 @@ TriMesh& TriMesh::operator=(const TriMesh& other) {
     return *this;
 }
 
-void TriMesh::build_adjacent_vertices(){ 
-    igl::adjacency_list(f_, adj_vertices_); 
+Eigen::Vector3d TriMesh::centroid() const {
+    Eigen::Vector3d centroid = v_.colwise().sum();
+    centroid *= (1.0/static_cast<float>(v_.rows()));
+    return centroid;
+}
+
+void TriMesh::rebuild() {
+    compute_rescale();
+    compute_adj_vertices();
+    compute_edges();
+
+    common::dprintf("Mesh: nv: %i, nf: %i, ne: %i\n", nv(), nf(), ne());
 }
 
 // rescale vertices between (0, 0, 0) and (1, 1, 1) 
-void TriMesh::rescale() {
+void TriMesh::compute_rescale() {
     using Point = Eigen::Vector3d;
     Point min_pt, max_pt;
     min_pt[0] = min_pt[1] = min_pt[2] = std::numeric_limits<double>::max();
@@ -74,23 +85,40 @@ void TriMesh::rescale() {
     }
 
     Point range = (max_pt - min_pt);
-    double max_range = std::max(range[0], std::max(range[1], range[2]));
+    scale_factor_ = std::max(range[0], std::max(range[1], range[2]));
     for (size_t r = 0; r < rows; ++r) {
         for(size_t c = 0; c < 3; ++c) {
-            v_(r, c) = (v_(r, c) - min_pt(c))/max_range;
+            v_(r, c) = (v_(r, c) - min_pt(c))/scale_factor_;
         }
     }
 }
 
-Eigen::Vector3d TriMesh::centroid() const {
-    Eigen::Vector3d centroid = v_.colwise().sum();
-    centroid *= (1.0/static_cast<float>(v_.rows()));
-    return centroid;
+void TriMesh::compute_adj_vertices() { 
+    igl::adjacency_list(f_, adj_vertices_); 
+}
+
+void TriMesh::compute_edges() {
+    const int64_t nv = v_.rows();
+    const int64_t nf = f_.rows();
+    const int64_t ne = (nv + nf - 2);
+    e_.reserve(ne);
+    constexpr int64_t DIM = 3;
+    for (int64_t f = 0; f < nf; ++f) {
+        for (int64_t i = 0; i < DIM; ++i) {
+            int64_t v0 = f_(f, i);
+            int64_t v1 = f_(f, (i+1)%DIM);
+            if (v0 < v1) {
+                e_.emplace_back(Edge{v0, v1});
+            }
+        }
+    }
 }
 
 TriMesh load_mesh(const std::string &filename) {
     TriMesh m;
+    //TODO(mayank) -- update this so as to read obj, and ply files.
     igl::readOBJ(filename, m.vertices(), m.faces());
+    m.rebuild();
     return m;
 }
 
@@ -98,6 +126,7 @@ TriMesh load_cube() {
     TriMesh m;
     m.vertices() = CUBE_VERTICES;
     m.faces() = CUBE_FACES;
+    m.rebuild();
     return m;
 }
 

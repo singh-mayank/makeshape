@@ -1,26 +1,21 @@
 // Copyright MakeShape. 2019, All rights reserved.
-#include "edges.hh"
-#include "aabb.hh"
+
 #include <Eigen/Dense>
-#include <vector>
 
 #pragma once
 
 namespace makeshape {
 namespace spatial {
 
+class TriMesh;
+
 class RegularGrid {
   public:
-    RegularGrid(const size_t max_depth);
-    bool build();
-
-    //TODO(mayank): 
-    // - build edges for visualization
-    // - distance field for a mesh
-    // - inside/outside field for a mesh
-    // - 
+    RegularGrid(const Eigen::Vector3i size);
+    bool build_binary_field(const TriMesh &m);
+    bool build_distance_field(const TriMesh &m);
   private:
-    const size_t max_depth_;
+    const Eigen::Vector3i size_;
 }; // RegularGrid
 
 } // spatial 

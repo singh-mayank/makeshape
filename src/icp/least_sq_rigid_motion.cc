@@ -15,8 +15,8 @@ namespace icp {
 //
 Eigen::Affine3d compute_icp(const spatial::TriMesh &m1, const spatial::TriMesh &m2) { 
     // num vertices
-    const int nv_m1 = m1.const_vertices().rows();
-    const int nv_m2 = m2.const_vertices().rows();
+    const int64_t nv_m1 = m1.nv();
+    const int64_t nv_m2 = m2.nv();
     CHECK(nv_m1 == nv_m2);
 
     // 1. compute weighted centroids of both point sets
