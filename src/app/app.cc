@@ -27,7 +27,7 @@ void App::custom_menu_callback(igl::opengl::glfw::Viewer &viewer,
 }
 
 void App::add_mesh(const spatial::TriMesh &m) {
-    viewer_.data().set_mesh(m.const_vertices(), m.const_faces());
+    viewer_.data().set_mesh(m.vertices(), m.faces());
     viewer_.data().set_face_based(true);
 }
 

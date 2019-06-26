@@ -43,14 +43,14 @@ namespace makeshape {
 namespace spatial {
 
 TriMesh::TriMesh(const TriMesh &other) {
-    v_ = other.const_vertices();
-    f_ = other.const_faces();
+    v_ = other.vertices();
+    f_ = other.faces();
 }
 
 TriMesh& TriMesh::operator=(const TriMesh& other) {
     if (this != &other) {
-        v_ = other.const_vertices();
-        f_ = other.const_faces();
+        v_ = other.vertices();
+        f_ = other.faces();
     }
     return *this;
 }
@@ -117,15 +117,15 @@ void TriMesh::compute_edges() {
 TriMesh load_mesh(const std::string &filename) {
     TriMesh m;
     //TODO(mayank) -- update this so as to read obj, and ply files.
-    igl::readOBJ(filename, m.vertices(), m.faces());
+    igl::readOBJ(filename, m.mutable_vertices(), m.mutable_faces());
     m.rebuild();
     return m;
 }
 
 TriMesh load_cube() {
     TriMesh m;
-    m.vertices() = CUBE_VERTICES;
-    m.faces() = CUBE_FACES;
+    m.mutable_vertices() = CUBE_VERTICES;
+    m.mutable_faces() = CUBE_FACES;
     m.rebuild();
     return m;
 }

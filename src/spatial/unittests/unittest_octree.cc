@@ -34,7 +34,7 @@ TEST(Octree, neighbours)
     makeshape::spatial::TriMesh m = makeshape::spatial::load_mesh("bunny.obj");
 
     makeshape::spatial::Octree oc(4);
-    oc.build(m.const_vertices());
+    oc.build(m.vertices());
     
     const std::vector<Eigen::Vector3d> pts{
         Eigen::Vector3d{0, 0, 0},
@@ -56,7 +56,7 @@ TEST(Octree, neighbours)
         // actual via brute force
         const double r2 = (radius * radius);
         size_t actual = 0;
-        const auto vertices = m.const_vertices();
+        const Eigen::MatrixXd vertices = m.vertices();
         for (int i = 0; i < vertices.rows(); ++i) {
             Eigen::Vector3d v = vertices.row(i);
             double dist = (v - p).squaredNorm();

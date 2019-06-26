@@ -13,11 +13,10 @@ class TriMesh {
     TriMesh() { /* do nothing */ }
     TriMesh(const TriMesh& other);
     TriMesh& operator=(const TriMesh& other);
-    //TODO(mayank): rename const_vertices --> vertices, vertices --> mutable_vertices
-    Eigen::MatrixXd &vertices() { return v_; }
-    Eigen::MatrixXi &faces() { return f_; }
-    const Eigen::MatrixXd &const_vertices() const{ return v_; }
-    const Eigen::MatrixXi &const_faces() const{ return f_; }
+    Eigen::MatrixXd &mutable_vertices() { return v_; }
+    Eigen::MatrixXi &mutable_faces() { return f_; }
+    const Eigen::MatrixXd &vertices() const{ return v_; }
+    const Eigen::MatrixXi &faces() const{ return f_; }
     const std::vector<std::vector<int>> adjacent_vertices() const { return adj_vertices_; } 
     Eigen::Vector3d centroid() const;
     const int64_t nv() const { return v_.rows(); }

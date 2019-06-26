@@ -26,8 +26,8 @@ Eigen::Affine3d compute_icp(const spatial::TriMesh &m1, const spatial::TriMesh &
     // 2. compute centered vectors
     // xi = pi - p_prime 
     // yi = q1 - q_prime
-    Eigen::MatrixXd X = m1.const_vertices().colwise() - p_prime;
-    Eigen::MatrixXd Y = m2.const_vertices().colwise() - q_prime;
+    Eigen::MatrixXd X = m1.vertices().colwise() - p_prime;
+    Eigen::MatrixXd Y = m2.vertices().colwise() - q_prime;
 
     // 3. compute the d x d covariance matrix
     // S = X.W.Transpose(Y)

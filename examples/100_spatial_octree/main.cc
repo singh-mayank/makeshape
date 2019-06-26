@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 
     // octree
     makeshape::spatial::Octree oc(4);
-    oc.build(m.const_vertices());
+    oc.build(m.vertices());
     printf("Octree Nodes: %zu\n", oc.num_nodes());
     const auto edges = oc.get_edges();
     application.set_edges(edges);
