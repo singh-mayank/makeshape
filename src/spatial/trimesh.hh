@@ -13,6 +13,7 @@ class TriMesh {
     TriMesh() { /* do nothing */ }
     TriMesh(const TriMesh& other);
     TriMesh& operator=(const TriMesh& other);
+    //TODO(mayank): rename const_vertices --> vertices, vertices --> mutable_vertices
     Eigen::MatrixXd &vertices() { return v_; }
     Eigen::MatrixXi &faces() { return f_; }
     const Eigen::MatrixXd &const_vertices() const{ return v_; }
