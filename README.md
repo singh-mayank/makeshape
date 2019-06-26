@@ -5,18 +5,18 @@ Utilities for 3d shape manipulation.
 ## Implements:
 
 #### Papers
-[x] [ Least-Squares Rigid Motion Using SVD, by Olga Sorkine-Hornung and Michael Rabinovich ](https://igl.ethz.ch/projects/ARAP/svd_rot.pdf)
-[ ] [ Dual Marching Cubes: Primal Contouring of Dual Grids ](https://www.cs.rice.edu/~jwarren/papers/dmc.pdf)
-  [ ] [ Manifold Contouring of an Adaptively Sampled Distance Field ](http://publications.lib.chalmers.se/records/fulltext/123811.pdf)
-[ ] 
+- [x] [ Least-Squares Rigid Motion Using SVD, by Olga Sorkine-Hornung and Michael Rabinovich ](https://igl.ethz.ch/projects/ARAP/svd_rot.pdf)
+- [ ] [ Dual Marching Cubes: Primal Contouring of Dual Grids ](https://www.cs.rice.edu/~jwarren/papers/dmc.pdf)
+  - [ ] [ Manifold Contouring of an Adaptively Sampled Distance Field ](http://publications.lib.chalmers.se/records/fulltext/123811.pdf)
+- [ ] More ..
  
-#### Algorithms:
-[x] Octree for neighbourhood queries.
-[ ] KDtree for neighbourhood queries (todo)
-[x] [Marching Cubes](https://dl.acm.org/citation.cfm?id=37422) (borrowed as-is via Paul Bourke, available at http://paulbourke.net/geometry/polygonise/).
-[ ] Intersections: AABB/BSphere, AABB/AABB, BSphere/BSphere, Ray/Plane, Ray/Triangle.
-[ ] Minimum distance between point and triangle (todo)
-[ ] Explicit (triangle mesh) to Implicit representation (both inside/outside and signed distance field) (todo)
+#### Algorithms:-
+- [x] Octree for neighbourhood queries.
+- [ ] KDtree for neighbourhood queries (todo)
+- [x] [Marching Cubes](https://dl.acm.org/citation.cfm?id=37422) (borrowed as-is via Paul Bourke, available at http://paulbourke.net/geometry/polygonise/).
+- [ ] Intersections: AABB/BSphere, AABB/AABB, BSphere/BSphere, Ray/Plane, Ray/Triangle.
+- [ ] Minimum distance between point and triangle (todo)
+- [ ] Explicit (triangle mesh) to Implicit representation (both inside/outside and signed distance field) (todo)
 
 ## Compile
 
