@@ -49,16 +49,21 @@ bool intersects(const AABB &a, const BSphere &b) {
     return (dist <= b.radius2());
 }
 
+// Möller–Trumbore intersection algorithm
+// https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
 std::pair<bool, Eigen::Vector3d> intersects(const Ray &r, const Triangle &t) {
     using Vec3 = Eigen::Vector3d;
-    // ray || triangle normal
     constexpr double EPSILON = 1e-9;
-    if (r.dir.dot(normal(t)) < EPSILON) {
+    const Vec3 edge1 = (t.v1 - t.v0);
+    const Vec3 edge2 = (t.v2 - t.v0);
+    const Vec3 h = r.dir.cross(edge2);
+    const double a = edge1.dot(h);
+    if (a > -EPSILON && a > EPSILON) {
         return std::make_pair(false, Vec3{0, 0, 0});
     }
-
-
-
+    const double f = 1.0/a;
+    const Vec3 s = r.origin - t.v0;
+    const double u = f * s.dot(h);
 
 
 
