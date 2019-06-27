@@ -1,63 +1,67 @@
 # MakeShape
 ```
 src/
-¦   CMakeLists.txt
-¦   README.md
-¦
-+---app
-¦       app.cc
-¦       app.hh
-¦       CMakeLists.txt
-¦
-+---common
-¦       CMakeLists.txt
-¦       common.cc
-¦       common.hh
-¦
-+---icp
-¦   ¦   CMakeLists.txt
-¦   ¦   least_sq_rigid_motion.cc
-¦   ¦   least_sq_rigid_motion.hh
-¦   ¦
-¦   +---unittests
-¦           CMakeLists.txt
-¦           unittest_least_sq.cc
-¦
-+---shapes
-¦       CMakeLists.txt
-¦
-+---spatial
-¦   ¦   aabb.cc
-¦   ¦   aabb.hh
-¦   ¦   bsphere.cc
-¦   ¦   bsphere.hh
-¦   ¦   CMakeLists.txt
-¦   ¦   edges.hh
-¦   ¦   intersections.cc
-¦   ¦   intersections.hh
-¦   ¦   octree.cc
-¦   ¦   octree.hh
-¦   ¦   trimesh.cc
-¦   ¦   trimesh.hh
-¦   ¦
-¦   +---unittests
-¦           CMakeLists.txt
-¦           unittest_octree.cc
-¦
-+---surface_reconstruction
-¦       CMakeLists.txt
-¦
-+---triangulate
-    ¦   CMakeLists.txt
-    ¦
-    +---dual_contouring
-    ¦       CMakeLists.txt
-    ¦       dual_contouring.cc
-    ¦       dual_contouring.hh
-    ¦
-    +---marching_cubes
+â”‚   CMakeLists.txt
+â”‚   README.md
+â”‚
+â”œâ”€â”€â”€app
+â”‚       app.cc
+â”‚       app.hh
+â”‚       CMakeLists.txt
+â”‚
+â”œâ”€â”€â”€common
+â”‚       CMakeLists.txt
+â”‚       common.cc
+â”‚       common.hh
+â”‚
+â”œâ”€â”€â”€icp
+â”‚   â”‚   CMakeLists.txt
+â”‚   â”‚   least_sq_rigid_motion.cc
+â”‚   â”‚   least_sq_rigid_motion.hh
+â”‚   â”‚
+â”‚   â””â”€â”€â”€unittests
+â”‚           CMakeLists.txt
+â”‚           unittest_least_sq.cc
+â”‚
+â”œâ”€â”€â”€shapes
+â”‚       CMakeLists.txt
+â”‚
+â”œâ”€â”€â”€spatial
+â”‚   â”‚   aabb.cc
+â”‚   â”‚   aabb.hh
+â”‚   â”‚   bsphere.cc
+â”‚   â”‚   bsphere.hh
+â”‚   â”‚   CMakeLists.txt
+â”‚   â”‚   edges.hh
+â”‚   â”‚   intersections.cc
+â”‚   â”‚   intersections.hh
+â”‚   â”‚   octree.cc
+â”‚   â”‚   octree.hh
+â”‚   â”‚   plane.hh
+â”‚   â”‚   ray.hh
+â”‚   â”‚   regular_grid.cc
+â”‚   â”‚   regular_grid.hh
+â”‚   â”‚   triangle.hh
+â”‚   â”‚   trimesh.cc
+â”‚   â”‚   trimesh.hh
+â”‚   â”‚
+â”‚   â””â”€â”€â”€unittests
+â”‚           CMakeLists.txt
+â”‚           unittest_octree.cc
+â”‚
+â”œâ”€â”€â”€surface_reconstruction
+â”‚       CMakeLists.txt
+â”‚
+â””â”€â”€â”€triangulate
+    â”‚   CMakeLists.txt
+    â”‚
+    â”œâ”€â”€â”€dual_contouring
+    â”‚       CMakeLists.txt
+    â”‚       dual_contouring.cc
+    â”‚       dual_contouring.hh
+    â”‚
+    â””â”€â”€â”€marching_cubes
             CMakeLists.txt
             marching_cubes.cc
             marching_cubes.hh
-
 ```
