@@ -21,14 +21,10 @@ class AABB {
     Eigen::Vector3d &extents() { return extents_; }
     Eigen::Vector3d min_pt() const { return (center_ - 0.5*extents_); }
     Eigen::Vector3d max_pt() const { return (center_ + 0.5*extents_); }
-    bool include(const Eigen::Vector3d &p);
   private:
     Eigen::Vector3d center_;
     Eigen::Vector3d extents_;
 }; // AABB
-
-//static AABB build_aabb(const Eigen::Matrixd &points);
-
 
 } // spatial 
 } // makeshape

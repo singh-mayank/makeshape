@@ -23,10 +23,5 @@ AABB& AABB::operator=(const AABB &other) {
     return *this;
 }
 
-bool AABB::include(const Eigen::Vector3d &p) {
-    //TODO(mayank): finish this.
-    return false;
-}
-
 } // spatial 
 } // makeshape

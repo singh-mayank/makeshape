@@ -2,6 +2,12 @@
 
 #include "intersections.hh"
 
+#include "aabb.hh"
+#include "bsphere.hh"
+#include "ray.hh"
+#include "triangle.hh"
+#include "plane.hh"
+
 namespace makeshape {
 namespace spatial {
 
