@@ -45,12 +45,14 @@ namespace spatial {
 TriMesh::TriMesh(const TriMesh &other) {
     v_ = other.vertices();
     f_ = other.faces();
+    rebuild();
 }
 
 TriMesh& TriMesh::operator=(const TriMesh& other) {
     if (this != &other) {
         v_ = other.vertices();
         f_ = other.faces();
+        rebuild();
     }
     return *this;
 }
