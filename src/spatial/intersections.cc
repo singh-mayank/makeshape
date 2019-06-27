@@ -50,15 +50,24 @@ bool intersects(const AABB &a, const BSphere &b) {
 }
 
 std::pair<bool, Eigen::Vector3d> intersects(const Ray &r, const Triangle &t) {
-    bool ret1 = false;
-    Eigen::Vector3d ret2{0, 0, 0};
-    return std::make_pair(ret1, ret2);
+    using Vec3 = Eigen::Vector3d;
+    // ray || triangle normal
+    constexpr double EPSILON = 1e-9;
+    if (r.dir.dot(normal(t)) < EPSILON) {
+        return std::make_pair(false, Vec3{0, 0, 0});
+    }
+
+
+
+
+
+
+    return std::make_pair(false, Vec3{0, 0, 0});
 }
 
 std::pair<bool, Eigen::Vector3d> intersects(const Ray &r, const Plane &p) {
-    bool ret1 = false;
-    Eigen::Vector3d ret2{0, 0, 0};
-    return std::make_pair(ret1, ret2);
+    using Vec3 = Eigen::Vector3d;
+    return std::make_pair(false, Vec3{0, 0, 0});
 }
 
 } // spatial 
