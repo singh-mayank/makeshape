@@ -38,8 +38,8 @@ bool inside(const OctreeNode *n, const Point &p) {
 
 size_t compute_child_index(const OctreeNode *n, const Point &p) {
     size_t index = 0;
-    const auto c = n->box_.const_center();
-    const auto e = n->box_.const_extents();
+    const Eigen::Vector3d c = n->box_.center();
+    const Eigen::Vector3d e = n->box_.extents();
     for (size_t i = 0; i < DIM; ++i) {
         const auto x = (p[i] - (c[i] - 0.5*e[i]))/e[i];
         if( std::round(x) ) {
@@ -51,8 +51,8 @@ size_t compute_child_index(const OctreeNode *n, const Point &p) {
 
 AABB compute_child_aabb(const OctreeNode* n, const size_t child_index) {
     Point child_center;
-    const Point child_extents = 0.5*n->box_.const_extents();
-    const Point center = n->box_.const_center();
+    const Point child_extents = 0.5*n->box_.extents();
+    const Point center = n->box_.center();
     for (size_t i = 0; i < DIM; ++i) {
         child_center[i] = (child_index & (1ULL << i))? 
             center[i] + 0.5*child_extents[i] : 

@@ -11,19 +11,19 @@ BSphere::BSphere(const Eigen::Vector3d &c, const double r) {
 }
 
 BSphere::BSphere(const BSphere &other) {
-    center_ = other.const_center();
-    radius_ = other.const_radius();
+    center_ = other.center();
+    radius_ = other.radius();
 }
 
 BSphere& BSphere::operator=(const BSphere &other) {
     if (this != &other) {
-        center_ = other.const_center();
-        radius_ = other.const_radius();
+        center_ = other.center();
+        radius_ = other.radius();
     }
     return *this;
 }
 
-bool BSphere::include(const Eigen::Vector3d &p) {
+bool BSphere::inside(const Eigen::Vector3d &p) {
     //TODO(mayank): finish this.
     return false;
 }

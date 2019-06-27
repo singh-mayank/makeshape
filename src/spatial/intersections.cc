@@ -12,11 +12,20 @@ namespace makeshape {
 namespace spatial {
 
 bool intersects(const AABB &a1, const AABB &a2) {
-    return true;
+    using Vec3 = Eigen::Vector3d;
+    const Vec3 min_a1 = a1.min_pt();
+    const Vec3 max_a1 = a1.max_pt();
+    const Vec3 min_a2 = a2.min_pt();
+    const Vec3 max_a2 = a2.max_pt();
+    return ((min_a1(0) <= max_a2(0) && max_a1(0) >= min_a2(0)) && 
+            (min_a1(1) <= max_a2(1) && max_a1(1) >= min_a2(1)) && 
+            (min_a1(2) <= max_a2(2) && max_a1(2) >= min_a2(2)));
 }
 
-bool intersects(const BSphere &b1, const AABB &b2) {
-    return false;
+bool intersects(const BSphere &b1, const BSphere &b2) {
+    double distsq = (b2.center() - b1.center()).squaredNorm();
+    double radSum = b1.radius() + b2.radius();
+    return (distsq <= (radSum * radSum));
 }
 
 // test between solid box and solid sphere | borrowed from: 
@@ -26,7 +35,7 @@ bool intersects(const AABB &a, const BSphere &b) {
     constexpr size_t DIM = 3;
     const Eigen::Vector3d min_pt = a.min_pt();
     const Eigen::Vector3d max_pt = a.max_pt();
-    const Eigen::Vector3d &c = b.const_center();
+    const Eigen::Vector3d &c = b.center();
     double dist = 0.0;
     for (size_t i = 0; i < DIM; ++i) {
         if (c(i) < min_pt(i)) {
@@ -40,6 +49,17 @@ bool intersects(const AABB &a, const BSphere &b) {
     return (dist <= b.radius2());
 }
 
+std::pair<bool, Eigen::Vector3d> intersects(const Ray &r, const Triangle &t) {
+    bool ret1 = false;
+    Eigen::Vector3d ret2{0, 0, 0};
+    return std::make_pair(ret1, ret2);
+}
+
+std::pair<bool, Eigen::Vector3d> intersects(const Ray &r, const Plane &p) {
+    bool ret1 = false;
+    Eigen::Vector3d ret2{0, 0, 0};
+    return std::make_pair(ret1, ret2);
+}
 
 } // spatial 
 } // makeshape

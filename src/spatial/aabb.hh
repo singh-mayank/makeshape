@@ -15,12 +15,13 @@ class AABB {
     AABB(const Eigen::Vector3d &c, const Eigen::Vector3d &e);
     AABB(const AABB &other);
     AABB& operator=(const AABB &other);
-    const Eigen::Vector3d &const_center() const { return center_; }
-    const Eigen::Vector3d &const_extents() const { return extents_; }
-    Eigen::Vector3d &center() { return center_; }
-    Eigen::Vector3d &extents() { return extents_; }
+    const Eigen::Vector3d &center() const { return center_; }
+    const Eigen::Vector3d &extents() const { return extents_; }
+    Eigen::Vector3d &mutable_center() { return center_; }
+    Eigen::Vector3d &mutable_extents() { return extents_; }
     Eigen::Vector3d min_pt() const { return (center_ - 0.5*extents_); }
     Eigen::Vector3d max_pt() const { return (center_ + 0.5*extents_); }
+    bool inside(const Eigen::Vector3d &point);
   private:
     Eigen::Vector3d center_;
     Eigen::Vector3d extents_;

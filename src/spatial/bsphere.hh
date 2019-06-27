@@ -15,12 +15,12 @@ class BSphere {
     BSphere(const Eigen::Vector3d &c, const double r);
     BSphere(const BSphere &other);
     BSphere& operator=(const BSphere &other);
-    const Eigen::Vector3d &const_center() const { return center_; }
-    const double &const_radius() const { return radius_; }
-    Eigen::Vector3d &center() { return center_; }
-    double &radius() { return radius_; }
+    const Eigen::Vector3d &center() const { return center_; }
+    double radius() const { return radius_; }
+    Eigen::Vector3d &mutable_center() { return center_; }
+    double &mutable_radius() { return radius_; }
     double radius2() const { return radius_ * radius_; }
-    bool include(const Eigen::Vector3d &p);
+    bool inside(const Eigen::Vector3d &p);
   private:
     Eigen::Vector3d center_;
     double radius_;
