@@ -71,5 +71,11 @@ std::pair<bool, Eigen::Vector3d> intersects(const Ray &r, const Plane &p) {
     return std::make_pair(false, Vec3{0, 0, 0});
 }
 
+// Ray/box
+// http://psgraphics.blogspot.com/2016/02/new-simple-ray-box-test-from-andrew.html
+//
+//
+
+
 } // spatial 
 } // makeshape
