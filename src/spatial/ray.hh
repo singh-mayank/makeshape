@@ -9,7 +9,7 @@ namespace spatial {
 
 struct Ray {
     Eigen::Vector3d origin;
-    Eigen::Vector3d dir;
+    Eigen::Vector3d dir;    // expects normalized
 };
 
 struct BoundedRay {

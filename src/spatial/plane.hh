@@ -9,7 +9,7 @@ namespace spatial {
 
 struct Plane {
     Eigen::Vector3d origin;
-    Eigen::Vector3d normal;
+    Eigen::Vector3d normal;     // expects normalized
 };
 
 } // spatial 
