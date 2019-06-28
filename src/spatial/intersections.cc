@@ -8,6 +8,15 @@
 #include "triangle.hh"
 #include "plane.hh"
 
+// --------------------------------------------------------------------------------------------
+// A set of resource for intersection tests:
+// 1. http://www.iquilezles.org/www/articles/intersectors/intersectors.htm
+// 2. http://www.geometrictools.com/Samples/Geometrics.html 
+// 3. http://www.andrewaye.com/Teikitu%20Gaming%20System/source_collision.shtml
+// 4. https://github.com/gszauer/GamePhysicsCookbook
+// 5. http://www.realtimerendering.com/intersections.html
+// --------------------------------------------------------------------------------------------
+
 namespace makeshape {
 namespace spatial {
 
@@ -18,9 +27,8 @@ constexpr size_t DIM = 3;
 const std::pair<bool, Vec3> FAILURE_CASE = std::make_pair(false, Vec3{0, 0, 0});
 double pow_sq(const double x){ return (x*x); };
 
-
-// This addresses some numerical robustness issues
-// Borrowed from : 
+// This addresses some numerical robustness issues, as mentioned on ScratchPixel.
+// Borrowed as-is from : 
 // https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-sphere-intersection
 std::tuple<bool, double, double> quadratic_roots(const double a, 
                                                  const double b, 
@@ -29,17 +37,12 @@ std::tuple<bool, double, double> quadratic_roots(const double a,
     if (d < 0) {
         return std::make_tuple(false, 0, 0);
     } else if (d == 0.0) {
-        double x = (-0.5 * b)/a;
+        const double x = (-0.5 * b)/a;
         return std::make_tuple(true, x, x);
     } else {
-        float x = sqrt(d);
-        float q = (b > 0) ? -0.5 * (b + x) : -0.5 * (b - x);
-        double x0 = q/a;
-        double x1 = c/q;
-        if (x0 > x1) {
-            std::swap(x0, x1);
-        }
-        return std::make_tuple(true, x0, x1);
+        const double x = sqrt(d);
+        const double q = (b > 0) ? -0.5 * (b + x) : -0.5 * (b - x);
+        return std::make_tuple(true, q/a, c/q);
     }
 }
 
@@ -118,17 +121,34 @@ std::pair<bool, Eigen::Vector3d> intersects(const Ray &r, const Plane &p) {
             return std::make_pair(true, r.origin + (t * r.dir));
         }
     }
-    return std::make_pair(false, Vec3{0, 0, 0});
+    return FAILURE_CASE;
 }
 
 // Returns true, and intersection point. False implies point returned is a dummy value
-std::pair<bool, Eigen::Vector3d> intersects(const Ray &r, const BSphere &b) {
-    return std::make_pair(false, Vec3{0, 0, 0});
+std::pair<bool, Eigen::Vector3d> intersects(const Ray &r, const BSphere &s) {
+    Vec3 m = r.origin - s.center();
+    double b = m.dot(r.dir);
+    double c = m.dot(m) - pow_sq(s.radius());
+    
+    if (c > 0.0 && b > 0.0) { // points away from sphere
+        return FAILURE_CASE;
+    }
+
+    double discr = pow_sq(b) - c;
+    if (discr < 0.0) {  // ray misses the sphere
+        return FAILURE_CASE;
+    }
+
+    double t = -b - sqrt(discr); // smaller 't' value
+    if (t < 0.0) { // ray started inside sphere, pick a point on sphere
+        t = 0.0;
+    }
+
+    return std::make_pair(true, r.origin + t * r.dir);
 }
 
 
-
-// Ray/box
+// Returns true, and intersection point. 
 // http://psgraphics.blogspot.com/2016/02/new-simple-ray-box-test-from-andrew.html
 std::pair<bool, Eigen::Vector3d> intersects(const Ray &r, const AABB &a) {
     return std::make_pair(false, Vec3{0, 0, 0});
