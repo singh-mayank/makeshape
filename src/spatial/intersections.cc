@@ -12,20 +12,16 @@ namespace makeshape {
 namespace spatial {
 
 bool intersects(const AABB &a1, const AABB &a2) {
-    using Vec3 = Eigen::Vector3d;
-    const Vec3 min_a1 = a1.min_pt();
-    const Vec3 max_a1 = a1.max_pt();
-    const Vec3 min_a2 = a2.min_pt();
-    const Vec3 max_a2 = a2.max_pt();
-    return ((min_a1(0) <= max_a2(0) && max_a1(0) >= min_a2(0)) && 
-            (min_a1(1) <= max_a2(1) && max_a1(1) >= min_a2(1)) && 
-            (min_a1(2) <= max_a2(2) && max_a1(2) >= min_a2(2)));
+    return (a1.min_pt().all() <= a2.max_pt().all() && 
+            a1.max_pt().all() >= a2.min_pt().all());
 }
 
 bool intersects(const BSphere &b1, const BSphere &b2) {
-    double distsq = (b2.center() - b1.center()).squaredNorm();
-    double radSum = b1.radius() + b2.radius();
-    return (distsq <= (radSum * radSum));
+    auto sq = [](const double x){
+        return ((x) * (x));
+    };
+    return ((b2.center() - b1.center()).squaredNorm() <= 
+            sq(b1.radius() + b2.radius()));
 }
 
 // test between solid box and solid sphere | borrowed from: 
