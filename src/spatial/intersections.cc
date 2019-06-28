@@ -60,9 +60,19 @@ std::pair<bool, Eigen::Vector3d> intersects(const Ray &r, const Triangle &t) {
     const double f = 1.0/a;
     const Vec3 s = r.origin - t.v0;
     const double u = f * s.dot(h);
-
-
-
+    if (u < 0.0 || u > 1.0) {
+        return std::make_pair(false, Vec3{0, 0, 0});
+    }
+    const Vec3 q = s.cross(edge1);
+    const double v = f * r.dir.dot(q);
+    if (v < 0.0 || u + v > 1.0) {
+        return std::make_pair(false, Vec3{0, 0, 0});
+    }
+    double t_intersect = f * edge1.dot(q);
+    if (t_intersect > EPSILON) {
+        Vec3 p = r.origin + (r.dir * t_intersect);
+        return std::make_pair(true, p);
+    } 
     return std::make_pair(false, Vec3{0, 0, 0});
 }
 
