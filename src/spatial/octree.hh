@@ -41,7 +41,7 @@ class Octree {
     bool build(const Eigen::MatrixXd &points);
     const Eigen::MatrixXd neighbours(const Eigen::Vector3d &p, const double radius);
   private:
-    OctreeNode *root_;
+    OctreeNode *root_{nullptr};
     const size_t max_depth_;
 }; // Octree
 
