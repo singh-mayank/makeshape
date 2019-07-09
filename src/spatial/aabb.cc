@@ -71,7 +71,6 @@ Edges get_edges(const AABB &box) {
         e.E.row(10) = Vec2i{2, 6};
         e.E.row(11) = Vec2i{3, 7};
     }
-
     return e;
 }
 

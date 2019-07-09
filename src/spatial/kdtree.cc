@@ -92,12 +92,21 @@ void KDTree::build(std::shared_ptr<const std::vector<Eigen::Vector3d>> points) {
     root_ = build(START_AXIS, START_VALUE, START_DEPTH, pts, root_);
 }
 
+Eigen::Vector3d KDTree::nearest_neighbour(const Eigen::Vector3d &q) const {
+    return nns(q, root_, std::numeric_limits<double>::max());
+    //return nns(q, root_, std::numeric_limits<double>::infinity());
+}
+
+//std::vector<std::size_t> KDTree::nearest_n_neighbours(const Eigen::Vector3d &q, 
+                                                      //const std::size_t n) const {
+
+//}
 
 KDTreeNode *KDTree::build(const SplitAxis axis, 
                           const double value,
                           const std::size_t depth,
                           const std::vector<std::size_t> &pt_indices,
-                          KDTreeNode *n) {
+                          KDTreeNode *n) const {
     if (pt_indices.empty()) {
         return nullptr;
     }
@@ -129,6 +138,13 @@ KDTreeNode *KDTree::build(const SplitAxis axis,
     n->left  = build(next_axis(axis), 0.5*value, depth+1, lpts, n->left);
     n->right = build(next_axis(axis), 0.5*value, depth+1, rpts, n->right);
     return n;
+}
+
+
+Eigen::Vector3d KDTree::nns(const Eigen::Vector3d &q, 
+                            const KDTreeNode *n, 
+                            const double curr_distance) const {
+    return Eigen::Vector3d{0, 0, 0};
 }
 
 Edges KDTree::get_edges() const {
