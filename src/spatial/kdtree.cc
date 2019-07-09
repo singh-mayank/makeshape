@@ -111,7 +111,7 @@ KDTreeNode *KDTree::build(const SplitAxis axis,
         return n;
     }
 
-    const int N = pt_indices.size();
+    const std::size_t N = pt_indices.size();
     std::vector<std::size_t> lpts;
     std::vector<std::size_t> rpts;
     { // split points for left and right children
@@ -130,6 +130,12 @@ KDTreeNode *KDTree::build(const SplitAxis axis,
     n->right = build(next_axis(axis), 0.5*value, depth+1, rpts, n->right);
     return n;
 }
+
+Edges KDTree::get_edges() const {
+    Edges e;
+    return e;
+}
+
 
 } // spatial 
 } // makeshape

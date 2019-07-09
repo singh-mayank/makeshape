@@ -6,6 +6,9 @@
 
 namespace makeshape {
 namespace spatial {
+
+struct Edges;
+
 //
 // AABB with center and extents
 //
@@ -26,6 +29,8 @@ class AABB {
     Eigen::Vector3d center_;
     Eigen::Vector3d extents_;
 }; // AABB
+
+Edges get_edges(const AABB &box);
 
 } // spatial 
 } // makeshape

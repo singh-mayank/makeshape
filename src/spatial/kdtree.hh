@@ -1,6 +1,5 @@
 // Copyright MakeShape. 2019, All rights reserved.
 #include "edges.hh"
-#include "aabb.hh"
 #include <Eigen/Dense>
 #include <vector>
 #include <memory>
@@ -30,6 +29,7 @@ class KDTree {
     KDTree(const std::size_t max_depth);
     ~KDTree();
     void build(std::shared_ptr<const std::vector<Eigen::Vector3d>> points);
+    Edges get_edges() const;
   private:
     KDTreeNode *build(const SplitAxis axis, 
                       const double value,
