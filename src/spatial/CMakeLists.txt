@@ -12,6 +12,7 @@ set( headers
     bsphere.hh
     edges.hh
     intersections.hh
+    kdtree.hh
     octree.hh
     trimesh.hh
 )
@@ -21,6 +22,7 @@ set( sources
     aabb.cc
     bsphere.cc
     intersections.cc
+    kdtree.cc
     octree.cc
     trimesh.cc
 )
