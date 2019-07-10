@@ -28,8 +28,6 @@ class KDTree {
     ~KDTree();
     void build(std::shared_ptr<const std::vector<Eigen::Vector3d>> points);
     Eigen::Vector3d nearest_neighbour(const Eigen::Vector3d &q) const;
-    std::vector<std::size_t> nearest_n_neighbours(const Eigen::Vector3d &q, 
-                                                  const std::size_t n) const;
     Edges get_edges() const;
   private:
     KDTreeNode *build(const SplitAxis axis, 

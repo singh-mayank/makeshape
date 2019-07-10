@@ -12,7 +12,7 @@ Utilities for 3d shape manipulation.
  
 #### Algorithms:-
 - [x] Octree for neighbourhood queries.
-- [ ] KDtree for neighbourhood queries (todo)
+- [x] KDtree for neighbourhood queries.
 - [x] [Marching Cubes](https://dl.acm.org/citation.cfm?id=37422) (borrowed as-is via Paul Bourke, available at http://paulbourke.net/geometry/polygonise/).
 - [ ] Intersections: AABB/BSphere, AABB/AABB, BSphere/BSphere, Ray/Plane, Ray/Triangle.
 - [ ] Minimum distance between point and triangle (todo)
