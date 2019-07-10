@@ -95,7 +95,7 @@ void KDTree::build(std::shared_ptr<const std::vector<Eigen::Vector3d>> points) {
 
 Eigen::Vector3d KDTree::nearest_neighbour(const Eigen::Vector3d &q) const {
     CHECK(root_ != nullptr);
-    double curr_dist = std::numeric_limits<double>::max(); // or infinity();
+    double curr_dist = std::numeric_limits<double>::infinity();
     std::size_t nearest_pt = 0;
     nns(q, root_, curr_dist, nearest_pt);
     return (data_->at(nearest_pt));
