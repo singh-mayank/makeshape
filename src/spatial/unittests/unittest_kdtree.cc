@@ -2,11 +2,13 @@
 //
 #include "kdtree.hh"
 #include "trimesh.hh"
+#include "common.hh"
 
 #include "gtest/gtest.h" 
 
 #include <random>
 #include <chrono>
+#include <inttypes.h>
 
 TEST(KDTree, neighbours)
 {
@@ -28,7 +30,7 @@ TEST(KDTree, neighbours)
     ktree.build(pts);
     
     // samples
-    constexpr int N_SAMPLES = 100;
+    constexpr int N_SAMPLES = 1000;
     PointArray q(N_SAMPLES);
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -42,6 +44,7 @@ TEST(KDTree, neighbours)
 
     // distance using kdtree 
     std::vector<double> actual(N_SAMPLES);
+    int64_t t1, t2;
     {
         auto start = std::chrono::steady_clock::now();   
         {
@@ -51,8 +54,7 @@ TEST(KDTree, neighbours)
             }
         }
         auto end = std::chrono::steady_clock::now();
-        auto t1 = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-        printf("kdtree: %lu ms\n", t1);
+        t1 = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
     }
 
     std::vector<double> expected(N_SAMPLES);
@@ -74,11 +76,11 @@ TEST(KDTree, neighbours)
             }
         }
         auto end = std::chrono::steady_clock::now();
-        auto t2 = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-        printf("brute: %lu ms\n", t2);
+        t2 = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
     }
 
     // test
+    EXPECT_LE(t1, t2);
     constexpr double TOLERANCE = 1e-6;
     for (int i = 0; i < N_SAMPLES; ++i) {
         EXPECT_NEAR(expected[i], actual[i], TOLERANCE);

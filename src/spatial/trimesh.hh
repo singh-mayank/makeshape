@@ -10,13 +10,15 @@ namespace spatial {
 
 class TriMesh {
   public:
-    struct Edge {
+    struct Edge { // TODO(mayank): Replace this with edges.hh
         int64_t v0, v1;
     };
     TriMesh() { /* do nothing */ }
     TriMesh(const TriMesh& other);
+	TriMesh(const TriMesh&& other);
     TriMesh& operator=(const TriMesh& other);
-    Eigen::MatrixXd &mutable_vertices() { return v_; }
+	TriMesh& operator=(const TriMesh&& other);
+	Eigen::MatrixXd &mutable_vertices() { return v_; }
     Eigen::MatrixXi &mutable_faces() { return f_; }
     std::vector<Edge> &mutable_edges() { return e_; }
     const Eigen::MatrixXd &vertices() const{ return v_; }

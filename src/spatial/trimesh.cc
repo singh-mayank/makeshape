@@ -45,17 +45,37 @@ namespace spatial {
 TriMesh::TriMesh(const TriMesh &other) {
     v_ = other.vertices();
     f_ = other.faces();
-    rebuild();
+	e_ = other.edges();
+	adj_vertices_ = other.adjacent_vertices();
+}
+
+TriMesh::TriMesh(const TriMesh &&other) {
+	v_ = std::move(other.vertices());
+	f_ = std::move(other.faces());
+	e_ = std::move(other.edges());
+	adj_vertices_ = std::move(other.adjacent_vertices());
 }
 
 TriMesh& TriMesh::operator=(const TriMesh& other) {
     if (this != &other) {
         v_ = other.vertices();
         f_ = other.faces();
-        rebuild();
+		e_ = other.edges();
+		adj_vertices_ = other.adjacent_vertices();
     }
     return *this;
 }
+
+TriMesh& TriMesh::operator=(const TriMesh&& other) {
+	if (this != &other) {
+		v_ = std::move(other.vertices());
+		f_ = std::move(other.faces());
+		e_ = std::move(other.edges());
+		adj_vertices_ = std::move(other.adjacent_vertices());
+	}
+	return *this;
+}
+
 
 Eigen::Vector3d TriMesh::centroid() const {
     Eigen::Vector3d centroid = v_.colwise().sum();
@@ -67,7 +87,6 @@ void TriMesh::rebuild() {
     compute_rescale();
     compute_adj_vertices();
     compute_edges();
-
     common::dprintf("Mesh: nv: %i, nf: %i, ne: %i\n", nv(), nf(), ne());
 }
 
@@ -120,16 +139,16 @@ TriMesh load_mesh(const std::string &filename) {
     TriMesh m;
     //TODO(mayank) -- update this so as to read obj, and ply files.
     igl::readOBJ(filename, m.mutable_vertices(), m.mutable_faces());
-    m.rebuild();
-    return m;
+	m.rebuild();
+	return std::move(m);
 }
 
-TriMesh load_cube() {
+TriMesh	 load_cube() {
     TriMesh m;
     m.mutable_vertices() = CUBE_VERTICES;
     m.mutable_faces() = CUBE_FACES;
-    m.rebuild();
-    return m;
+	m.rebuild();
+	return std::move(m);
 }
 
 } // spatial 
