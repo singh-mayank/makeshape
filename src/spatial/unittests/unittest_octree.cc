@@ -1,5 +1,5 @@
 // Copyright MakeShape. 2019, All rights reserved.
-//
+
 #include "octree.hh"
 #include "trimesh.hh"
 
@@ -68,10 +68,4 @@ TEST(Octree, neighbours)
         // check
         EXPECT_EQ(actual, expected);
     }
-}
-
-int main(int argc, char **argv)
-{
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }

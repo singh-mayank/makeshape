@@ -37,9 +37,10 @@ class KDTree {
                       const std::size_t curr_depth,
                       const std::vector<std::size_t> &pt_indices,
                       KDTreeNode *n) const;
-    Eigen::Vector3d nns(const Eigen::Vector3d &q, 
-                        const KDTreeNode *n, 
-                        const double curr_distance) const;
+    void nns(const Eigen::Vector3d &q, 
+             const KDTreeNode *n, 
+             double &curr_distance,
+             std::size_t &nearest_pt) const;
   private:
     std::size_t max_depth_{1};
     KDTreeNode *root_{nullptr};

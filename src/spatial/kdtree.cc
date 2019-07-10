@@ -1,6 +1,7 @@
 // Copyright MakeShape. 2019, All rights reserved.
 
 #include "kdtree.hh"
+#include "common.hh"
 #include <numeric>
 #include <algorithm>
  
@@ -80,21 +81,24 @@ KDTree::~KDTree() {
 }
 
 void KDTree::build(std::shared_ptr<const std::vector<Eigen::Vector3d>> points) {
-    points = data_;
-    const std::size_t N = points->size();
-    
+    CHECK(!points->empty());
+    data_ = points;
+    const std::size_t N = data_->size();
     std::vector<std::size_t> pts(N);
     std::iota(pts.begin(), pts.end(), 0);
     constexpr SplitAxis     START_AXIS = SplitAxis::X;
     constexpr double        START_VALUE = 0.5;
     constexpr std::size_t   START_DEPTH = 0u;
-
     root_ = build(START_AXIS, START_VALUE, START_DEPTH, pts, root_);
+    CHECK(root_ != nullptr);
 }
 
 Eigen::Vector3d KDTree::nearest_neighbour(const Eigen::Vector3d &q) const {
-    return nns(q, root_, std::numeric_limits<double>::max());
-    //return nns(q, root_, std::numeric_limits<double>::infinity());
+    CHECK(root_ != nullptr);
+    double curr_dist = std::numeric_limits<double>::max(); // or infinity();
+    std::size_t nearest_pt = 0;
+    nns(q, root_, curr_dist, nearest_pt);
+    return (data_->at(nearest_pt));
 }
 
 //std::vector<std::size_t> KDTree::nearest_n_neighbours(const Eigen::Vector3d &q, 
@@ -141,10 +145,45 @@ KDTreeNode *KDTree::build(const SplitAxis axis,
 }
 
 
-Eigen::Vector3d KDTree::nns(const Eigen::Vector3d &q, 
-                            const KDTreeNode *n, 
-                            const double curr_distance) const {
-    return Eigen::Vector3d{0, 0, 0};
+void KDTree::nns(const Eigen::Vector3d &q, 
+                 const KDTreeNode *n, 
+                 double &curr_distance,
+                 std::size_t &nearest_pt) const {
+    if (n == nullptr) {
+        return;
+    }
+    if (n->left == nullptr && n->right == nullptr) {
+        for (const auto each : n->points) {
+            double d = (q - data_->at(each)).squaredNorm();
+            if ( d < curr_distance ) {
+                curr_distance = d;
+                nearest_pt = each;
+            }
+        }
+    } else {
+        KDTreeNode *search_first = nullptr;
+        const auto index = to_index(n->axis);
+        if ( q[index] <= n->value ) {
+            search_first = n->left;
+        } else {
+            search_first = n->right;
+        }
+        if (search_first == n->left ) {
+            if (q[index] - curr_distance <= n->value ) {
+                nns(q, n->left, curr_distance, nearest_pt);
+            }
+            if (q[index] + curr_distance > n->value ) {
+                nns(q, n->right, curr_distance, nearest_pt);
+            }
+        } else { // search_first == n->right
+            if (q[index] + curr_distance > n->value ) {
+                nns(q, n->right, curr_distance, nearest_pt);
+            }
+            if (q[index] - curr_distance <= n->value ) {
+                nns(q, n->left, curr_distance, nearest_pt);
+            }
+        }
+    }
 }
 
 Edges KDTree::get_edges() const {

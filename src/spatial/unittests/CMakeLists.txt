@@ -12,7 +12,9 @@ set( headers
 
 # source files
 set( sources
+    main.cc
     unittest_octree.cc
+    unittest_kdtree.cc
 )
 
 # copy headers to include directory
