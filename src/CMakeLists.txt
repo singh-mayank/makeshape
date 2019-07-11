@@ -3,6 +3,7 @@
 #----------------------------------------------------------------------
 
 add_subdirectory(common)
+add_subdirectory(algs)
 add_subdirectory(spatial)
 # add_subdirectory(shapes)
 add_subdirectory(triangulate)
