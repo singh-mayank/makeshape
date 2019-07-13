@@ -1,19 +1,17 @@
 #----------------------------------------------------------------------
-# makeshape
+# makeshape | 200_algs_fast_poisson_sampling
 #----------------------------------------------------------------------
 project ( ${CMAKE_PROJECT_NAME} )
 
 # executable 
-set( exe "101_spatial_quadtree" )
+set( exe "200_algs_fast_poisson_sampling" )
 
 # headers
 set( headers 
-    quadtree.hh
 )
 
 # source files
 set( sources
-    quadtree.cc
     main.cc
 )
 
@@ -33,6 +31,7 @@ target_include_directories( ${exe}
     PRIVATE
         ./
         "common"
+        "algs"
         "spatial"
         "app"
 )
@@ -40,6 +39,7 @@ target_include_directories( ${exe}
 target_link_libraries( ${exe}
     PRIVATE
         "common"
+        "algs"
         "spatial"
         "app"
 )

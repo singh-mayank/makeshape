@@ -30,8 +30,9 @@ target_sources( ${lib}
 
 target_include_directories( ${lib}
     PRIVATE 
-        ./
         "common"
+    PUBLIC
+        ./
 )
 
 target_link_libraries( ${lib}
