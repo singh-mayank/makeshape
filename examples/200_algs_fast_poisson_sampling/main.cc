@@ -26,8 +26,7 @@ int main(int argc, char *argv[])
         ;
     const auto result = options.parse(argc, argv);
     // print help
-    const bool print_help = result["help"].as<bool>();
-    if (print_help) {
+    if (result.count("help")) {
         printf("%s\n", options.help().c_str());
         return 0;
     }
