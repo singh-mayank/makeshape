@@ -8,8 +8,8 @@ Utilities for 3d shape manipulation.
 - [x] [ Least-Squares Rigid Motion Using SVD, by Olga Sorkine-Hornung and Michael Rabinovich ](https://igl.ethz.ch/projects/ARAP/svd_rot.pdf)
 - [ ] [ Dual Marching Cubes: Primal Contouring of Dual Grids ](https://www.cs.rice.edu/~jwarren/papers/dmc.pdf)
   - [ ] [ Manifold Contouring of an Adaptively Sampled Distance Field ](http://publications.lib.chalmers.se/records/fulltext/123811.pdf)
-- [ ] [ A Spatial Data Structure for Fast Poisson-Disk Sample Generation ](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.78.3366&rep=rep1&type=pdf)
-  - [ ] [ Fast Poisson Disk Sampling in Arbitrary Dimensions ](https://www.cs.ubc.ca/~rbridson/docs/bridson-siggraph07-poissondisk.pdf)
+- [x] [ A Spatial Data Structure for Fast Poisson-Disk Sample Generation ](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.78.3366&rep=rep1&type=pdf)
+  - [x] [ Fast Poisson Disk Sampling in Arbitrary Dimensions ](https://www.cs.ubc.ca/~rbridson/docs/bridson-siggraph07-poissondisk.pdf)
 - [ ] More ..
  
 #### Algorithms:-
