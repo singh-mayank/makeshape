@@ -10,11 +10,11 @@
 // 
 int main(int argc, char *argv[])
 {
-    
     cxxopts::Options options("Fast Poisson Sampling example", 
             "Generates a set of random samples on a 2d plane (XY), with bounds [0.0, 1.0]");
-
     options.add_options()
+        ("h,help", "Print help", 
+         cxxopts::value<bool>()->default_value("false"))
         ("d,debug", "Enable debugging", 
          cxxopts::value<bool>()->default_value("false"))
         ("n,samples", "Number of samples, defaulted to 30", 
@@ -25,17 +25,22 @@ int main(int argc, char *argv[])
          cxxopts::value<std::string>()->default_value(""))
         ;
     const auto result = options.parse(argc, argv);
-
+    // print help
+    const bool print_help = result["help"].as<bool>();
+    if (print_help) {
+        printf("%s\n", options.help().c_str());
+        return 0;
+    }
+    // compute samples
     const double DISTANCE_BETWEEN_SAMPLES = result["dist"].as<double>();
     const int N_SAMPLES = result["samples"].as<int>();
-
     printf("Fast Poisson Sampling on 2d plane, with bounds [0.0, 1.0]\n");
     printf("\t N_SAMPLES: %i | Distance between samples: %f\n", 
             N_SAMPLES, 
             DISTANCE_BETWEEN_SAMPLES);
     const auto sampled_pts = makeshape::algs::sample_plane(DISTANCE_BETWEEN_SAMPLES, N_SAMPLES);
     printf("\t Computed [ %zu ] samples\n", sampled_pts.size());
-
+    // write to file, if needed
     const bool debug = result["debug"].as<bool>();
     const std::string filename = result["output_filename"].as<std::string>();
     if (debug && filename != "") {
@@ -46,6 +51,5 @@ int main(int argc, char *argv[])
         }
         myfile.close();
     }
-
     return 0;
 }
