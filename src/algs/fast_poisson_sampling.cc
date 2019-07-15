@@ -38,7 +38,7 @@ std::vector<Eigen::Vector2d> generate_random_pts(const double r,
 
 }
 
-std::vector<Eigen::Vector2d> sample_plane(const double r, const int k) {
+std::vector<Eigen::Vector2d> sample_points_on_plane(const double r, const int k) {
     struct GridCell {
         int index; // Index into an array of samples. 
                    // Sample point lies within this GridCell
@@ -125,11 +125,11 @@ std::vector<Eigen::Vector2d> sample_plane(const double r, const int k) {
 }
 
 
-std::vector<Eigen::Vector3d> sample_cube(const int n_samples) {
+std::vector<Eigen::Vector3d> sample_points_in_cube(const double r, const int k) {
     return std::vector<Eigen::Vector3d>{};
 }
 
-std::vector<Eigen::Vector3d> sample_sphere(const int n_samples) {
+std::vector<Eigen::Vector3d> sample_points_on_sphere(const double r, const int k) {
     return std::vector<Eigen::Vector3d>{};
 }
 
