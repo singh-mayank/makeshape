@@ -34,6 +34,8 @@ target_include_directories( ${exe}
         "algs"
         "spatial"
         "app"
+    PUBLIC
+        "cxxopts"
 )
 
 target_link_libraries( ${exe}
@@ -42,6 +44,8 @@ target_link_libraries( ${exe}
         "algs"
         "spatial"
         "app"
+    PUBLIC
+        "cxxopts"
 )
 
 # copies 'makeshape_bin' into bin_dir

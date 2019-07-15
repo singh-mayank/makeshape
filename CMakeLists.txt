@@ -28,7 +28,7 @@ find_package(LIBIGL REQUIRED QUIET)
 # download and build googletest
 #----------------------------------------------------------------------
 # Download and unpack googletest at configure time
-configure_file(cmake/CMakeLists.txt.in googletest-download/CMakeLists.txt)
+configure_file(cmake/CMakeLists.txt.googletest googletest-download/CMakeLists.txt)
 execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
   RESULT_VARIABLE result
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download )
@@ -58,6 +58,29 @@ add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
 if (CMAKE_VERSION VERSION_LESS 2.8.11)
   include_directories("${gtest_SOURCE_DIR}/include")
 endif()
+
+#----------------------------------------------------------------------
+# download and build cxxopts
+#----------------------------------------------------------------------
+# Download and unpack cxxopts at configure time
+configure_file(cmake/CMakeLists.txt.cxxopts cxxopts-download/CMakeLists.txt)
+execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
+  RESULT_VARIABLE result
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cxxopts-download )
+if(result)
+  message(FATAL_ERROR "CMake step for cxxopts failed: ${result}")
+endif()
+execute_process(COMMAND ${CMAKE_COMMAND} --build .
+  RESULT_VARIABLE result
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cxxopts-download )
+if(result)
+  message(FATAL_ERROR "Build step for cxxopts failed: ${result}")
+endif()
+
+# Add cxxopts directly to our build.
+add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/cxxopts-src
+                 ${CMAKE_CURRENT_BINARY_DIR}/cxxopts-build
+                 EXCLUDE_FROM_ALL)
 
 #----------------------------------------------------------------------
 # directories for bin, lib, tests, and data
