@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
             N_SAMPLES, 
             DISTANCE_BETWEEN_SAMPLES);
     const auto sampled_pts = 
-        makeshape::algs::samples_points_on_plane(DISTANCE_BETWEEN_SAMPLES, N_SAMPLES);
+        makeshape::algs::sample_points_on_plane(DISTANCE_BETWEEN_SAMPLES, N_SAMPLES);
     printf("\t Computed [ %zu ] samples\n", sampled_pts.size());
     // write to file, if needed
     const bool debug = result["debug"].as<bool>();
