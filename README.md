@@ -4,7 +4,7 @@ Utilities for 3d shape manipulation.
 
 ## Implements:
 
-#### Papers
+#### Associated publications:
 - [x] [ Least-Squares Rigid Motion Using SVD, by Olga Sorkine-Hornung and Michael Rabinovich ](https://igl.ethz.ch/projects/ARAP/svd_rot.pdf)
 - [ ] [ Dual Marching Cubes: Primal Contouring of Dual Grids ](https://www.cs.rice.edu/~jwarren/papers/dmc.pdf)
   - [ ] [ Manifold Contouring of an Adaptively Sampled Distance Field ](http://publications.lib.chalmers.se/records/fulltext/123811.pdf)
@@ -12,7 +12,7 @@ Utilities for 3d shape manipulation.
   - [x] [ Fast Poisson Disk Sampling in Arbitrary Dimensions ](https://www.cs.ubc.ca/~rbridson/docs/bridson-siggraph07-poissondisk.pdf)
 - [ ] More ..
  
-#### Algorithms:-
+#### Algorithms:
 - [x] [Octree](https://en.wikipedia.org/wiki/Octree) (search points in a radius `r`)
 - [x] [KDtree](https://en.wikipedia.org/wiki/K-d_tree) (search nearest neighbour to point `p`)
   - [ ] Revisit kdtree with [a better implementation](http://cmp.felk.cvut.cz/ftp/articles/kybic/Kybic-CAK-2010-40.pdf) 
@@ -26,7 +26,7 @@ Utilities for 3d shape manipulation.
 - [ ] Minimum distance between point and triangle
 - [ ] Point cloud (explicit) to signed distance field (implicit)
 
-#### ToDo:-
+#### ToDo:
 - [ ] Visualize KDTree
 - [ ] Visualize distance field on regular grid
 
