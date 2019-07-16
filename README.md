@@ -26,6 +26,10 @@ Utilities for 3d shape manipulation.
 - [ ] Minimum distance between point and triangle
 - [ ] Point cloud (explicit) to signed distance field (implicit)
 
+#### ToDo:-
+- [ ] Visualize KDTree
+- [ ] Visualize distance field on regular grid
+
 ## Compile
 
 Compile this project using the standard cmake routine:
