@@ -15,6 +15,7 @@ Utilities for 3d shape manipulation.
 #### Algorithms:-
 - [x] [Octree](https://en.wikipedia.org/wiki/Octree) (search points in a radius `r`)
 - [x] [KDtree](https://en.wikipedia.org/wiki/K-d_tree) (search nearest neighbour to point `p`)
+  - [ ] Revisit kdtree with [a better implementation](http://cmp.felk.cvut.cz/ftp/articles/kybic/Kybic-CAK-2010-40.pdf) 
 - [x] [Marching Cubes](https://dl.acm.org/citation.cfm?id=37422) (borrowed as-is via Paul Bourke, available at http://paulbourke.net/geometry/polygonise/).
 - [ ] Intersections: 
   - [ ] AABB/BSphere
