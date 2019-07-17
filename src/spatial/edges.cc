@@ -2,8 +2,6 @@
 
 #include "edges.hh"
 
-#pragma once
-
 namespace makeshape {
 namespace spatial {
 
