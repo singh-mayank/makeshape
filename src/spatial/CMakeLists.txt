@@ -21,6 +21,7 @@ set( headers
 set( sources
     aabb.cc
     bsphere.cc
+    edges.cc
     intersections.cc
     kdtree.cc
     octree.cc

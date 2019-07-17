@@ -21,11 +21,6 @@ constexpr size_t N_VERTICES = 8;
 constexpr size_t N_EDGES = 12;
 constexpr size_t MAX_DEPTH = 8;
 
-struct NodeEdges {
-    std::array<Point, N_VERTICES> v;
-    std::array<std::pair<int, int>, N_EDGES> e;
-};
-
 bool inside(const OctreeNode *n, const Point &p) {
     const Point min_pt = n->min_pt();
     const Point max_pt = n->max_pt();
@@ -111,8 +106,8 @@ size_t count_nodes(const OctreeNode *n) {
     return c;
 }
 
-NodeEdges get_node_edges(const OctreeNode *n) {
-    NodeEdges ne;
+CubeEdges get_node_edges(const OctreeNode *n) {
+    CubeEdges ne;
     {
         Point min_pt = n->min_pt();
         Point max_pt = n->max_pt();
@@ -205,7 +200,7 @@ Edges Octree::get_edges() const {
         return Edges{};
     }
     // traverse all nodes
-    std::vector<NodeEdges> ne;
+    std::vector<CubeEdges> ne;
     std::list<OctreeNode*> q;
     q.push_back(root_);
     while(!q.empty()){
@@ -218,61 +213,7 @@ Edges Octree::get_edges() const {
             }
         }
     }
-    // build edges
-    Edges e;
-    {
-        // vertices
-        e.P.resize(ne.size()*N_VERTICES, DIM);
-        for (size_t i = 0; i < ne.size(); ++i) {
-            for(size_t j = 0; j < N_VERTICES; ++j) {
-                const size_t index = i*N_VERTICES + j;
-                for(size_t k = 0; k < DIM; ++k) {
-                    e.P(index, k) = ne[i].v[j][k];
-                }
-            }
-        }
-        // edges 
-        constexpr size_t VERTICES_PER_EDGE = 2;
-        e.E.resize(ne.size()*N_EDGES, VERTICES_PER_EDGE); // 2 vertices per edge
-        for (size_t i = 0; i < ne.size(); ++i) {
-            const size_t offset = i*N_EDGES;
-            for(size_t j = 0; j < N_EDGES; ++j) {
-                int row = static_cast<int>(offset + j);
-                int ii = static_cast<int>(i * 8);
-                e.E(row, 0) = ne[i].e[j].first + (ii);
-                e.E(row, 1) = ne[i].e[j].second + (ii);
-            }
-        }
-        // color
-        e.C.resize(1, 3);
-        e.C(0, 0) = 1;
-        e.C(0, 1) = 1;
-        e.C(0, 2) = 1;
-        // print debug
-        // {
-        //     for (size_t i = 0; i < ne.size(); ++i) {
-        //         for(size_t j = 0; j < N_VERTICES; ++j) {
-        //             const size_t index = i*N_VERTICES + j;
-        //             printf("[%zu]: [%f, %f, %f]\n",
-        //                     index,
-        //                     e.P(index, 0),
-        //                     e.P(index, 1),
-        //                     e.P(index, 2));
-        //         }
-        //     }
-        //
-        //     for (size_t i = 0; i < ne.size(); ++i) {
-        //         for(size_t j = 0; j < N_EDGES; ++j) {
-        //             const size_t index = i*N_EDGES + j;
-        //             printf("[%zu]: [%i, %i]\n",
-        //                     index,
-        //                     e.E(index, 0),
-        //                     e.E(index, 1));
-        //         }
-        //     }
-        // }
-    }
-    return e;
+    return make_edges(ne);
 }
 
 bool Octree::build(const Eigen::MatrixXd &points) {
