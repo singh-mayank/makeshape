@@ -119,7 +119,7 @@ std::pair<AABB, AABB> compute_child_boxes(const SplitAxis n_axis,
         }
         box_left = AABB(lcenter, extents);
         box_right = AABB(rcenter, extents);
-        box_left.print(); box_right.print();
+        // box_left.print(); box_right.print();
         //CHECK(value_at_axis(lcenter, n_axis) <= half_value);
         //CHECK(value_at_axis(rcenter, n_axis) > half_value);
     }
@@ -183,7 +183,7 @@ KDTreeNode *KDTree::build(const SplitAxis axis,
         n = new KDTreeNode{axis, value, nullptr, nullptr, box, std::vector<std::size_t>{}};
     }
 
-#if 1
+#if 0
     for(const auto &each : pt_indices) {
         Eigen::Vector3d pt = data_->at(each);
         if(!box.inside(pt)) {
@@ -194,7 +194,6 @@ KDTreeNode *KDTree::build(const SplitAxis axis,
         }
     }
 #endif
-
 
     const auto n_axis = next_axis(axis);
     const auto half_value = 0.5 * value;
@@ -230,6 +229,7 @@ void KDTree::nns(const Eigen::Vector3d &q,
         return;
     }
     if (n->left == nullptr && n->right == nullptr) {
+        CHECK(!n->points.empty());
         for (const auto each : n->points) {
             double d = (q - data_->at(each)).squaredNorm();
             if ( d < curr_distance ) {

@@ -34,7 +34,7 @@ TEST(KDTree, neighbours)
     PointArray q(N_SAMPLES);
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_real_distribution<> dis(0.0, 2.0);
+    std::uniform_real_distribution<> dis(-10, 10);
     for (int i = 0; i < N_SAMPLES; ++i) {
         double x = dis(gen);
         double y = dis(gen);
