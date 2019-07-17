@@ -24,7 +24,22 @@ AABB& AABB::operator=(const AABB &other) {
     return *this;
 }
 
-bool AABB::inside(const Eigen::Vector3d &p) {
+void AABB::print() const {
+    printf("c: {%f, %f, %f} | e: {%f, %f, %f}\n",  
+            center_.x(), center_.y(), center_.z(), 
+            extents_.x(), extents_.y(), extents_.z());
+}
+
+void AABB::print_minmax() const {
+    using Vec3 = Eigen::Vector3d;
+    const Vec3 minpt = min_pt();
+    const Vec3 maxpt = max_pt();
+    printf("{%f, %f, %f} -> {%f, %f, %f}\n",  
+            minpt.x(), minpt.y(), minpt.z(), 
+            maxpt.x(), maxpt.y(), maxpt.z());
+}
+
+bool AABB::inside(const Eigen::Vector3d &p) const {
     using Vec3 = Eigen::Vector3d;
     const Vec3 minpt = min_pt();
     const Vec3 maxpt = max_pt();

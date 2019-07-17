@@ -14,15 +14,14 @@
 namespace makeshape {
 namespace spatial {
 
-enum class SplitAxis { X = 0u, Y, Z };
+enum class SplitAxis { X = 0, Y = 1, Z = 2 };
 struct KDTreeNode {
     SplitAxis axis;
     double value;
     KDTreeNode *left;
     KDTreeNode *right;
+    AABB box; // for visualization
     std::vector<std::size_t> points;
-    // visualization
-    AABB box;
 }; // KDTreeNode
 
 class KDTree {
@@ -37,6 +36,7 @@ class KDTree {
                       const double value,
                       const std::size_t curr_depth,
                       const std::vector<std::size_t> &pt_indices,
+                      const AABB &box,
                       KDTreeNode *n) const;
     void nns(const Eigen::Vector3d &q, 
              const KDTreeNode *n, 

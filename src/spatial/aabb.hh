@@ -25,7 +25,9 @@ class AABB {
     Eigen::Vector3d &mutable_extents() { return extents_; }
     Eigen::Vector3d min_pt() const { return (center_ - 0.5*extents_); }
     Eigen::Vector3d max_pt() const { return (center_ + 0.5*extents_); }
-    bool inside(const Eigen::Vector3d &point);
+    void print() const;
+    void print_minmax() const;
+    bool inside(const Eigen::Vector3d &point) const;
   private:
     Eigen::Vector3d center_;
     Eigen::Vector3d extents_;

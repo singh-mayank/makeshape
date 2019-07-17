@@ -26,6 +26,7 @@ class App {
     App();
     void add_mesh(const spatial::TriMesh &m);
     void set_edges(const spatial::Edges &e);
+    void add_point(const Eigen::MatrixXd& P, const Eigen::MatrixXd& C);
     void launch() { viewer_.launch(); }
   private:
     App(const App& app) = delete;

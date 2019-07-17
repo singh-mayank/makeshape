@@ -35,5 +35,9 @@ void App::set_edges(const spatial::Edges &e) {
     viewer_.data().set_edges(e.P, e.E, e.C);
 }
 
+void App::add_point(const Eigen::MatrixXd& P, const Eigen::MatrixXd& C) {
+    viewer_.data().set_points(P, C);
+}
+
 } // namespace app
 } // namespace makeshape

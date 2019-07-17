@@ -69,6 +69,65 @@ SplitAxis next_axis(const SplitAxis axis) {
     return to_axis((to_index(axis) + 1) % 3);
 }
 
+double value_at_axis(const Eigen::Vector3d &p, const SplitAxis &axis) {
+    switch(axis) {
+        case SplitAxis::X: return p.x(); break;
+        case SplitAxis::Y: return p.y(); break;
+        case SplitAxis::Z: return p.z(); break;
+        default: CHECK(false);
+    }
+    return 0.0;
+}
+
+
+std::pair<AABB, AABB> compute_child_boxes(const SplitAxis n_axis, 
+                                          const double half_value,
+                                          const AABB &box) {
+    AABB box_left;
+    AABB box_right;
+    {
+        Eigen::Vector3d lcenter;
+        Eigen::Vector3d rcenter;
+        Eigen::Vector3d extents;
+
+        double ex = box.extents().x();
+        double ey = box.extents().y();
+        double ez = box.extents().z();
+
+        double cx = box.center().x();
+        double cy = box.center().y();
+        double cz = box.center().z();
+    
+        double s = 1;
+        switch(n_axis) {
+            case SplitAxis::X: 
+                extents = Eigen::Vector3d(ex*0.5, ey, ez);
+                lcenter = Eigen::Vector3d(cx - s*ex*0.25, cy, cz);
+                rcenter = Eigen::Vector3d(cx + s*ex*0.25, cy, cz);
+                break;
+            case SplitAxis::Y: 
+                extents = Eigen::Vector3d(ex, ey*0.5, ez);
+                lcenter = Eigen::Vector3d(cx, cy - s*ey*0.25, cz);
+                rcenter = Eigen::Vector3d(cx, cy + s*ey*0.25, cz);
+                break;
+            case SplitAxis::Z: 
+                extents = Eigen::Vector3d(ex, ey, ez*0.5);
+                lcenter = Eigen::Vector3d(cx, cy, cz - s*ez*0.25);
+                rcenter = Eigen::Vector3d(cx, cy, cz + s*ez*0.25);
+                break;
+            default: CHECK(false);
+        }
+        box_left = AABB(lcenter, extents);
+        box_right = AABB(rcenter, extents);
+        box_left.print(); box_right.print();
+        //CHECK(value_at_axis(lcenter, n_axis) <= half_value);
+        //CHECK(value_at_axis(rcenter, n_axis) > half_value);
+    }
+
+
+
+    return std::make_pair(box_left, box_right);
+}
 
 }
 
@@ -88,9 +147,10 @@ void KDTree::build(std::shared_ptr<const std::vector<Eigen::Vector3d>> points) {
     std::vector<std::size_t> pts(N);
     std::iota(pts.begin(), pts.end(), 0);
     constexpr SplitAxis     START_AXIS = SplitAxis::X;
-    constexpr double        START_VALUE = 0.5;
+    constexpr double        START_VALUE = 1.0;
     constexpr std::size_t   START_DEPTH = 0u;
-    root_ = build(START_AXIS, START_VALUE, START_DEPTH, pts, root_);
+    AABB box(Eigen::Vector3d(0.5, 0.5, 0.5), Eigen::Vector3d(1, 1, 1));
+    root_ = build(START_AXIS, START_VALUE, START_DEPTH, pts, box, root_);
     CHECK(root_ != nullptr);
 }
 
@@ -111,37 +171,53 @@ KDTreeNode *KDTree::build(const SplitAxis axis,
                           const double value,
                           const std::size_t depth,
                           const std::vector<std::size_t> &pt_indices,
+                          const AABB &box,
                           KDTreeNode *n) const {
     if (pt_indices.empty()) {
         return nullptr;
     }
     
-    if (n == nullptr) {
-        n = new KDTreeNode{axis, 0.0, nullptr, nullptr};
-    }
- 
     if (depth >= max_depth_) {
-        n->points = pt_indices;
-        return n;
+        return new KDTreeNode{axis, value, nullptr, nullptr, box, pt_indices};
+    } else {
+        n = new KDTreeNode{axis, value, nullptr, nullptr, box, std::vector<std::size_t>{}};
     }
 
+#if 1
+    for(const auto &each : pt_indices) {
+        Eigen::Vector3d pt = data_->at(each);
+        if(!box.inside(pt)) {
+            printf("\t p: {%f, %f, %f} | value: %f | axis: %i\n", 
+                    pt[0], pt[1], pt[2], value, to_index(axis));
+            box.print_minmax();
+            //CHECK(false);
+        }
+    }
+#endif
+
+
+    const auto n_axis = next_axis(axis);
+    const auto half_value = 0.5 * value;
     const std::size_t N = pt_indices.size();
     std::vector<std::size_t> lpts;
     std::vector<std::size_t> rpts;
     { // split points for left and right children
-        lpts.reserve(N/2);
-        rpts.reserve(N/2);
+        //lpts.reserve(N/2);
+        //rpts.reserve(N/2);
         for (std::size_t i = 0; i < N; ++i) {
-            std::size_t pt_index = pt_indices[i];
-            if (data_->at(pt_index)[to_index(axis)] < value) {
+            std::size_t pt_index = pt_indices.at(i);
+            Eigen::Vector3d pt = data_->at(pt_index);
+            double pt_value = value_at_axis(pt, n_axis);
+            if (pt_value <= half_value) {
                 lpts.push_back(pt_index);
             } else {
                 rpts.push_back(pt_index);
             }
         }
     }
-    n->left  = build(next_axis(axis), 0.5*value, depth+1, lpts, n->left);
-    n->right = build(next_axis(axis), 0.5*value, depth+1, rpts, n->right);
+    const auto child_boxes = compute_child_boxes(n_axis, half_value, box);
+    n->left  = build(n_axis, half_value, depth+1, lpts, child_boxes.first, n->left);
+    n->right = build(n_axis, half_value, depth+1, rpts, child_boxes.second, n->right);
     return n;
 }
 
@@ -198,7 +274,7 @@ Edges KDTree::get_edges() const {
         if (curr == nullptr) {
             continue;
         }
-        //ne.emplace_back(get_node_edges(curr));
+        ne.emplace_back(get_cube_edges(curr->box));
         q.push_back(curr->left);
         q.push_back(curr->right);
     }
