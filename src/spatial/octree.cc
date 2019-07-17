@@ -106,40 +106,6 @@ size_t count_nodes(const OctreeNode *n) {
     return c;
 }
 
-CubeEdges get_node_edges(const OctreeNode *n) {
-    CubeEdges ne;
-    {
-        Point min_pt = n->min_pt();
-        Point max_pt = n->max_pt();
-        // bottom
-        ne.v[0] = min_pt;
-        ne.v[1] = Point(max_pt[0], min_pt[1], min_pt[2]);
-        ne.v[2] = Point(max_pt[0], max_pt[1], min_pt[2]);
-        ne.v[3] = Point(min_pt[0], max_pt[1], min_pt[2]);
-        // top
-        ne.v[4] = Point(min_pt[0], min_pt[1], max_pt[2]);
-        ne.v[5] = Point(max_pt[0], min_pt[1], max_pt[2]);
-        ne.v[6] = max_pt;
-        ne.v[7] = Point(min_pt[0], max_pt[1], max_pt[2]);
-
-        ne.e[0] = std::make_pair(0, 1);
-        ne.e[1] = std::make_pair(1, 2);
-        ne.e[2] = std::make_pair(2, 3);
-        ne.e[3] = std::make_pair(3, 0);
-
-        ne.e[4] = std::make_pair(4, 5);
-        ne.e[5] = std::make_pair(5, 6);
-        ne.e[6] = std::make_pair(6, 7);
-        ne.e[7] = std::make_pair(7, 4);
-
-        ne.e[8]  = std::make_pair(0, 4);
-        ne.e[9]  = std::make_pair(1, 5);
-        ne.e[10] = std::make_pair(2, 6);
-        ne.e[11] = std::make_pair(3, 7);
-    }
-    return ne;
-}
-
 void print(const OctreeNode *n) {
     Point min_pt = n->min_pt();
     Point max_pt = n->max_pt();
@@ -206,7 +172,7 @@ Edges Octree::get_edges() const {
     while(!q.empty()){
         const OctreeNode *curr = q.front();
         q.pop_front();
-        ne.emplace_back(get_node_edges(curr));
+        ne.emplace_back(get_cube_edges(curr->box_));
         for(size_t i = 0; i < OctreeNode::MAX_CHILDREN; ++i) {
             if (curr->child_[i] != nullptr) {
                 q.push_back(curr->child_[i]);

@@ -1,5 +1,6 @@
 // Copyright MakeShape. 2019, All rights reserved.
 #include "edges.hh"
+#include "aabb.hh"
 #include <Eigen/Dense>
 #include <vector>
 #include <memory>
@@ -20,6 +21,8 @@ struct KDTreeNode {
     KDTreeNode *left;
     KDTreeNode *right;
     std::vector<std::size_t> points;
+    // visualization
+    AABB box;
 }; // KDTreeNode
 
 class KDTree {

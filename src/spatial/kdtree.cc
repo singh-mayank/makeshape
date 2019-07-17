@@ -4,6 +4,7 @@
 #include "common.hh"
 #include <numeric>
 #include <algorithm>
+#include <list>
  
 namespace makeshape {
 namespace spatial {
@@ -188,7 +189,20 @@ void KDTree::nns(const Eigen::Vector3d &q,
 
 Edges KDTree::get_edges() const {
     Edges e;
-    return e;
+    std::vector<CubeEdges> ne;
+    std::list<KDTreeNode*> q;
+    q.push_back(root_);
+    while(!q.empty()){
+        const KDTreeNode *curr = q.front();
+        q.pop_front();
+        if (curr == nullptr) {
+            continue;
+        }
+        //ne.emplace_back(get_node_edges(curr));
+        q.push_back(curr->left);
+        q.push_back(curr->right);
+    }
+    return make_edges(ne);
 }
 
 

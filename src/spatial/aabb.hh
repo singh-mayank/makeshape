@@ -8,6 +8,7 @@ namespace makeshape {
 namespace spatial {
 
 struct Edges;
+struct CubeEdges;
 
 //
 // AABB with center and extents
@@ -31,6 +32,7 @@ class AABB {
 }; // AABB
 
 Edges get_edges(const AABB &box);
+CubeEdges get_cube_edges(const AABB &box);
 
 } // spatial 
 } // makeshape
