@@ -13,6 +13,7 @@ set( headers
     edges.hh
     intersections.hh
     kdtree.hh
+    kdtree2.hh
     octree.hh
     trimesh.hh
 )
@@ -24,6 +25,7 @@ set( sources
     edges.cc
     intersections.cc
     kdtree.cc
+    kdtree2.cc
     octree.cc
     trimesh.cc
 )
