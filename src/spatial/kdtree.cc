@@ -201,8 +201,8 @@ KDTreeNode *KDTree::build(const SplitAxis axis,
     std::vector<std::size_t> lpts;
     std::vector<std::size_t> rpts;
     { // split points for left and right children
-        //lpts.reserve(N/2);
-        //rpts.reserve(N/2);
+        lpts.reserve(N/2);
+        rpts.reserve(N/2);
         for (std::size_t i = 0; i < N; ++i) {
             std::size_t pt_index = pt_indices.at(i);
             Eigen::Vector3d pt = data_->at(pt_index);
@@ -220,7 +220,7 @@ KDTreeNode *KDTree::build(const SplitAxis axis,
     return n;
 }
 
-
+#if 1
 void KDTree::nns(const Eigen::Vector3d &q, 
                  const KDTreeNode *n, 
                  double &curr_distance,
@@ -262,6 +262,27 @@ void KDTree::nns(const Eigen::Vector3d &q,
         }
     }
 }
+#else
+void KDTree::nns(const Eigen::Vector3d &q, 
+                 const KDTreeNode *n, 
+                 double &curr_distance,
+                 std::size_t &nearest_pt) const {
+    if (n == nullptr) {
+        return;
+    }
+    if (n->left == nullptr && n->right == nullptr) {
+        CHECK(!n->points.empty());
+        for (const auto each : n->points) {
+            double d = (q - data_->at(each)).squaredNorm();
+            if ( d < curr_distance ) {
+                curr_distance = d;
+                nearest_pt = each;
+            }
+        }
+    }
+}
+#endif
+
 
 Edges KDTree::get_edges() const {
     Edges e;

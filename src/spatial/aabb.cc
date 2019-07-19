@@ -48,6 +48,11 @@ bool AABB::inside(const Eigen::Vector3d &p) const {
             (p(2) >= minpt(2) && p(2) <= maxpt(2)));
 }
 
+
+AABB AABB::make_from_minmax(const Eigen::Vector3d &minpt, const Eigen::Vector3d &maxpt) {
+    return AABB(0.5*(minpt + maxpt), (maxpt - minpt));
+}
+
 Edges get_edges(const AABB &box) {
     using Vec3d = Eigen::Vector3d;
     using Vec2i = Eigen::Vector2i;

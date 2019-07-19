@@ -28,6 +28,7 @@ class AABB {
     void print() const;
     void print_minmax() const;
     bool inside(const Eigen::Vector3d &point) const;
+    static AABB make_from_minmax(const Eigen::Vector3d &minpt, const Eigen::Vector3d &maxpt);
   private:
     Eigen::Vector3d center_;
     Eigen::Vector3d extents_;
