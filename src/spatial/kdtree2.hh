@@ -24,19 +24,19 @@ class KDTree2 {
   public:
     KDTree2(const std::size_t max_depth);
     ~KDTree2();
-    void build(std::shared_ptr<const std::vector<Eigen::Vector3d>> points);
     void build(const Eigen::MatrixXd &points);
+    void build(std::shared_ptr<const std::vector<Eigen::Vector3d>> points);
     Eigen::Vector3d nearest_neighbour(const Eigen::Vector3d &q) const;
     Edges get_edges() const;
   private:
     KDTreeNode2 *build(const SplitAxis axis, 
-                      const double value,
+                      const std::size_t value,
                       const std::size_t curr_depth,
                       const std::vector<std::size_t> &pt_indices,
                       const AABB &box,
                       KDTreeNode2 *n) const;
     void nns(const Eigen::Vector3d &q, 
-             const KDTreeNode *n, 
+             const KDTreeNode2 *n, 
              double &curr_distance,
              std::size_t &nearest_pt) const;
   private:
