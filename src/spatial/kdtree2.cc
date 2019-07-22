@@ -3,6 +3,7 @@
 #include "kdtree2.hh"
 #include <array>
 #include <limits>
+#include <numeric>
 
 namespace makeshape {
 namespace spatial {
@@ -30,12 +31,32 @@ std::pair<SplitAxis, std::size_t> compute_axis_value(
         std::size_t index;
         double data;
         bool operator<(const IndexData &other) const {
-            data < other.data;
+            return (data < other.data);
         }
     };
     // deompose into each dimension
     std::vector<IndexData> x, y, z;
     const std::size_t N = indices.size();
+
+#if 0
+    auto sort_by_dim = [&data, &indices](std::vector<IndexData> &data_dim, int pick_dim) {
+        data_dim.resize(N);
+        for (std::size_t i = 0; i < N; ++i) {
+            data_dim[i].index = indices.at(i);
+            const Eigen::Vector3d &p = data->at(indices.at(i));
+            data_dim[i].data = p[pick_dim];
+        }
+
+        std::sort(data_dim.begin(), data_dim.end(), [](const IndexData &a, const IndexData &b) {
+            return (a.data < b.data);
+        });
+    };
+
+    sort_by_dim(x);
+    sort_by_dim(y);
+    sort_by_dim(z);
+
+#else
     x.resize(N);
     y.resize(N);
     z.resize(N);
@@ -50,6 +71,8 @@ std::pair<SplitAxis, std::size_t> compute_axis_value(
     std::sort(x.begin(), x.end());
     std::sort(y.begin(), y.end());
     std::sort(z.begin(), z.end());
+#endif
+
     // compute min range
     double range[3];
     range[0] = x[N-1].data - x[0].data;
@@ -82,7 +105,7 @@ KDTree2::~KDTree2() {
 }
 
 void KDTree2::build(const Eigen::MatrixXd &points) {
-    const int n_rows = points.rows();
+    const int n_rows = static_cast<int>(points.rows());
     if (n_rows < 1) {
         return;
     }

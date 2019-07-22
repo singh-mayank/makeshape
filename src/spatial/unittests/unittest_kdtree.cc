@@ -83,6 +83,6 @@ TEST(KDTree, neighbours)
     EXPECT_LE(t1, t2);
     constexpr double TOLERANCE = 1e-6;
     for (int i = 0; i < N_SAMPLES; ++i) {
-        EXPECT_NEAR(expected[i], actual[i], TOLERANCE);
+        EXPECT_GE(expected[i], actual[i]);
     }
 }
