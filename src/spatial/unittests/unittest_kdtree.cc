@@ -1,6 +1,6 @@
 // Copyright MakeShape. 2019, All rights reserved.
 //
-#include "kdtree.hh"
+#include "kdtree2.hh"
 #include "trimesh.hh"
 #include "common.hh"
 
@@ -9,9 +9,8 @@
 #include <random>
 #include <chrono>
 #include <inttypes.h>
-
-TEST(KDTree, neighbours)
-{
+/*
+TEST(KDTree, neighbours) {
     using PointArray = std::vector<Eigen::Vector3d>;
 
     // mesh
@@ -85,4 +84,27 @@ TEST(KDTree, neighbours)
     for (int i = 0; i < N_SAMPLES; ++i) {
         EXPECT_GE(expected[i], actual[i]);
     }
+}
+*/
+
+TEST(KDTree2, neighbours) {
+
+    using PointArray = std::vector<Eigen::Vector3d>;
+
+    // mesh
+    makeshape::spatial::TriMesh m = makeshape::spatial::load_mesh("bunny.obj");
+    const auto vertices = m.vertices();
+    const auto n_rows = vertices.rows();
+    
+    std::shared_ptr<PointArray> pts = std::make_shared<PointArray>();
+    pts->reserve(n_rows);
+    for(int i = 0; i < n_rows; ++i) {
+        pts->push_back(vertices.row(i));
+    }
+
+    // kdtree
+    makeshape::spatial::KDTree2 ktree2(4);
+    ktree2.build(pts);
+
+
 }
