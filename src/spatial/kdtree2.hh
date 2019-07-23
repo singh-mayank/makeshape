@@ -13,10 +13,9 @@ namespace spatial {
 enum class SplitAxis { X = 0, Y = 1, Z = 2 };
 struct KDTreeNode2 {
     SplitAxis axis;
-    std::size_t value;
-    KDTreeNode2 *left;
-    KDTreeNode2 *right;
-    AABB box; // for visualization
+    double value;
+    KDTreeNode2 *left{nullptr};
+    KDTreeNode2 *right{nullptr};
     std::vector<std::size_t> points;
 }; // KDTreeNode
 
@@ -29,12 +28,7 @@ class KDTree2 {
     Eigen::Vector3d nearest_neighbour(const Eigen::Vector3d &q) const;
     Edges get_edges() const;
   private:
-    KDTreeNode2 *build(const SplitAxis axis, 
-                      const std::size_t value,
-                      const std::size_t curr_depth,
-                      const std::vector<std::size_t> &pt_indices,
-                      const AABB &box,
-                      KDTreeNode2 *n) const;
+    KDTreeNode2 *build(const std::vector<std::size_t> &pt_indices, int depth) const;
     void nns(const Eigen::Vector3d &q, 
              const KDTreeNode2 *n, 
              double &curr_distance,

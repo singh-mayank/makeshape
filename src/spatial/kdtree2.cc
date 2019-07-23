@@ -104,20 +104,7 @@ void KDTree2::build(std::shared_ptr<const std::vector<Eigen::Vector3d>> points) 
     data_ = points;
     std::vector<std::size_t> indices(data_->size());
     std::iota(indices.begin(), indices.end(), 0);
-    const auto axis_value = compute_axis_value(data_, indices);
-    {
-        int a = to_index(axis_value.first);
-        CHECK(a >= 0 && a <= 2);
-        const double v = data_->at(axis_value.second)[a];
-        printf("\t axis: %i | value: %f\n", a, v);
-    }
-    const AABB box(Eigen::Vector3d(0.5, 0.5, 0.5), Eigen::Vector3d(1,1,1));
-    root_ = build(std::get<0>(axis_value),  // axis
-                  std::get<1>(axis_value),  // value (index of)
-                  0,                        // current depth
-                  indices,                  // domain
-                  box,                      // bounding box
-                  root_);                   // KDTree2
+    root_ = build(indices, 0);
 }
 /*
 Eigen::Vector3d KDTree2::nearest_neighbour(const Eigen::Vector3d &q) const {
@@ -130,27 +117,34 @@ Edges KDTree2::get_edges() const {
 }
 */
 
-KDTreeNode2 *KDTree2::build(const SplitAxis axis, 
-                            const std::size_t value_index,
-                            const std::size_t curr_depth,
-                            const std::vector<std::size_t> &pt_indices,
-                            const AABB &box,
-                            KDTreeNode2 *n) const {
-    if (pt_indices.empty()){
+KDTreeNode2 *KDTree2::build(const std::vector<std::size_t> &pt_indices, int depth) const {
+    if (pt_indices.empty() || depth >= max_depth_){
         return nullptr;
     }
-    
-    n = new KDTreeNode2{axis, value_index, nullptr, nullptr, box};
+
+    const auto axis_value       = compute_axis_value(data_, pt_indices);
+    const int axis              = to_index(axis_value.first);
+    const std::size_t v_index   = axis_value.second;
+    const double value          = data_->at(v_index)[axis];
+    {
+        CHECK(axis >= 0 && axis <= 2);
+        std::string offset(depth, ' ');
+        printf("\t%s axis: %i | value: %f\n", offset.c_str(), axis, value);
+    }
+
+    KDTreeNode2 *node = new KDTreeNode2();
+    node->axis = to_axis(axis);
+    node->value = value;
+
+    // split data for left/right children
     IndexVec left_pt_indices, right_pt_indices;
     {
-        const int a = to_index(axis);
-        const double v = data_->at(value_index)[a];
         for(const auto &each_index : pt_indices) {
-            if (each_index == value_index) {
+            if (each_index == v_index) {
                 continue;
             }
-            const double w = data_->at(each_index)[a];
-            if (w < v) {
+            const double w = data_->at(each_index)[axis];
+            if (w <= value) {
                 left_pt_indices.push_back(each_index);
             } else {
                 right_pt_indices.push_back(each_index);
@@ -158,38 +152,16 @@ KDTreeNode2 *KDTree2::build(const SplitAxis axis,
         }
     }
     CHECK(pt_indices.size()-1 == left_pt_indices.size() + right_pt_indices.size());
-
-
-    const auto axis_value = compute_axis_value(data_, indices);
-    {
-        int a = to_index(axis_value.first);
-        CHECK(a >= 0 && a <= 2);
-        const double v = data_->at(axis_value.second)[a];
-        printf("\t axis: %i | value: %f\n", a, v);
-    }
-
-    n->left = build(std::get<0>(axis_value),
-                    std::get<1>(axis_value), 
-                    curr_depth+1,
-                    left_pt_indices,
-                    box,
-                    n->left);
-
-    n->right = build(std::get<0>(axis_value),
-                     std::get<1>(axis_value), 
-                     curr_depth+1,
-                     right_pt_indices,
-                     box,
-                     n->right);
     
-    if (n->left == nullptr && n->right == nullptr) {
-        n->points = pt_indices;
+    node->left = build(left_pt_indices, depth+1);
+    node->right = build(right_pt_indices, depth+1);
+    
+    if (node->left == nullptr && node->right == nullptr) {
+        node->points = pt_indices;
     }
 
-    return n;
-
+    return node;
 }
-
 
 } // spatial 
 } // makeshape
