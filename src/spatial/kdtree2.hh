@@ -13,7 +13,7 @@ namespace spatial {
 enum class SplitAxis { X = 0, Y = 1, Z = 2 };
 struct KDTreeNode2 {
     SplitAxis axis;
-    double value;
+    std::size_t value;
     KDTreeNode2 *left;
     KDTreeNode2 *right;
     AABB box; // for visualization

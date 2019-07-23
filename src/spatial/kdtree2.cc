@@ -34,40 +34,18 @@ std::pair<SplitAxis, std::size_t> compute_axis_value(
         bool operator<(const IndexData &other) const {
             return (data < other.data);
         }
-        bool operator-(const IndexData &other) const {
-            return (data - other.data);
-        }
     };
     // deompose into each dimension
     std::vector<IndexData> x, y, z;
     const std::size_t N = indices.size();
     CHECK(N > 0);
-#if 0
-    auto sort_by_dim = [&data, &indices](std::vector<IndexData> &data_dim, int pick_dim) {
-        data_dim.resize(N);
-        for (std::size_t i = 0; i < N; ++i) {
-            data_dim[i].index = indices.at(i);
-            const Eigen::Vector3d &p = data->at(indices.at(i));
-            data_dim[i].data = p[pick_dim];
-        }
 
-        std::sort(data_dim.begin(), data_dim.end(), [](const IndexData &a, const IndexData &b) {
-            return (a.data < b.data);
-        });
-    };
-
-    sort_by_dim(x);
-    sort_by_dim(y);
-    sort_by_dim(z);
-
-#else
     x.resize(N, {0, 0});
     y.resize(N, {0, 0});
     z.resize(N, {0, 0});
     for (std::size_t i = 0; i < N; ++i) {
         x[i].index = y[i].index = z[i].index = indices.at(i);
-        // const Eigen::Vector3d &p = data->at(indices.at(i));
-        const Eigen::Vector3d p{0, 0, 0};
+        const Eigen::Vector3d &p = data->at(indices.at(i));
         x[i].data = p.x();
         y[i].data = p.y();
         z[i].data = p.z();
@@ -76,22 +54,23 @@ std::pair<SplitAxis, std::size_t> compute_axis_value(
     std::sort(x.begin(), x.end());
     std::sort(y.begin(), y.end());
     std::sort(z.begin(), z.end());
-#endif
 
     // compute min range_axis
     double range_axis[3] = {0, 0, 0};
-    range_axis[0] = x[N-1] - x[0];
-    range_axis[1] = y[N-1] - y[0];
-    range_axis[2] = z[N-1] - z[0];
+    range_axis[0] = x[N-1].data - x[0].data;
+    range_axis[1] = y[N-1].data - y[0].data;
+    range_axis[2] = z[N-1].data - z[0].data;
 
-    if (range_axis[0] < range_axis[1] ) {
-        if (range_axis[0] < range_axis[2]) { // range_axis[0]
+    printf("\t  range: {%f, %f, %f} | ", range_axis[0], range_axis[1], range_axis[2]);
+
+    if (range_axis[0] > range_axis[1] ) {
+        if (range_axis[0] > range_axis[2]) { // range_axis[0]
             return std::make_pair(SplitAxis::X, x.at(N/2).index);
         } else { // range_axis[2]
             return std::make_pair(SplitAxis::Z, z.at(N/2).index);
         }
     } else { // range_axis[1] < range_axis[0]
-        if (range_axis[1] < range_axis[2]) { // range_axis[1]
+        if (range_axis[1] > range_axis[2]) { // range_axis[1]
             return std::make_pair(SplitAxis::Y, y.at(N/2).index);
         } else { // range_axis[2]
             return std::make_pair(SplitAxis::Z, z.at(N/2).index);
@@ -129,7 +108,7 @@ void KDTree2::build(std::shared_ptr<const std::vector<Eigen::Vector3d>> points) 
     {
         int a = to_index(axis_value.first);
         CHECK(a >= 0 && a <= 2);
-        float v = data_->at(axis_value.second)[a];
+        const double v = data_->at(axis_value.second)[a];
         printf("\t axis: %i | value: %f\n", a, v);
     }
     const AABB box(Eigen::Vector3d(0.5, 0.5, 0.5), Eigen::Vector3d(1,1,1));
@@ -152,13 +131,62 @@ Edges KDTree2::get_edges() const {
 */
 
 KDTreeNode2 *KDTree2::build(const SplitAxis axis, 
-                            const std::size_t value,
+                            const std::size_t value_index,
                             const std::size_t curr_depth,
                             const std::vector<std::size_t> &pt_indices,
                             const AABB &box,
                             KDTreeNode2 *n) const {
+    if (pt_indices.empty()){
+        return nullptr;
+    }
+    
+    n = new KDTreeNode2{axis, value_index, nullptr, nullptr, box};
+    IndexVec left_pt_indices, right_pt_indices;
+    {
+        const int a = to_index(axis);
+        const double v = data_->at(value_index)[a];
+        for(const auto &each_index : pt_indices) {
+            if (each_index == value_index) {
+                continue;
+            }
+            const double w = data_->at(each_index)[a];
+            if (w < v) {
+                left_pt_indices.push_back(each_index);
+            } else {
+                right_pt_indices.push_back(each_index);
+            }
+        }
+    }
+    CHECK(pt_indices.size()-1 == left_pt_indices.size() + right_pt_indices.size());
 
 
+    const auto axis_value = compute_axis_value(data_, indices);
+    {
+        int a = to_index(axis_value.first);
+        CHECK(a >= 0 && a <= 2);
+        const double v = data_->at(axis_value.second)[a];
+        printf("\t axis: %i | value: %f\n", a, v);
+    }
+
+    n->left = build(std::get<0>(axis_value),
+                    std::get<1>(axis_value), 
+                    curr_depth+1,
+                    left_pt_indices,
+                    box,
+                    n->left);
+
+    n->right = build(std::get<0>(axis_value),
+                     std::get<1>(axis_value), 
+                     curr_depth+1,
+                     right_pt_indices,
+                     box,
+                     n->right);
+    
+    if (n->left == nullptr && n->right == nullptr) {
+        n->points = pt_indices;
+    }
+
+    return n;
 
 }
 
