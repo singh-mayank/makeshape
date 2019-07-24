@@ -106,11 +106,14 @@ void KDTree2::build(std::shared_ptr<const std::vector<Eigen::Vector3d>> points) 
     std::iota(indices.begin(), indices.end(), 0);
     root_ = build(indices, 0);
 }
+
+std::pair<std::size_t, double> KDTree2::nearest_neighbour(const Eigen::Vector3d &q) const {
+    double curr_min_dist = std::numeric_limits<double>::infinity();
+    std::size_t min_index = nns(q, root_, curr_min_dist);
+    return std::make_pair(min_index, curr_min_dist);
+}   
+
 /*
-Eigen::Vector3d KDTree2::nearest_neighbour(const Eigen::Vector3d &q) const {
-
-}
-
 Edges KDTree2::get_edges() const {
 
 
@@ -162,6 +165,51 @@ KDTreeNode2 *KDTree2::build(const std::vector<std::size_t> &pt_indices, int dept
 
     return node;
 }
+
+std::size_t KDTree2::nns(const Eigen::Vector3d &q, 
+                     const KDTreeNode2 *n,
+                     double &current_distance) const {
+    if (n == nullptr) {
+        return 0;
+    }
+
+    if (n->left == nullptr && n->right == nullptr) {
+        CHECK(!n->points.empty());
+        double min_distance = std::numeric_limits<double>::max();
+        std::size_t min_index = 0;
+        for (const auto each : n->points) {
+            double d = (q - data_->at(each)).squaredNorm();
+            if ( d < min_distance ) {
+                min_distance = d;
+                min_index = each;
+            }
+        }
+        current_distance = min_distance;
+        return min_index;
+    }
+
+    const double value = n->value;
+    const SplitAxis axis = n->axis;
+    KDTreeNode2 *nearer_node;
+    KDTreeNode2 *further_node;
+    if ( q[to_index(axis)] <= value) {
+        nearer_node = n->left;
+        further_node = n->right;
+    } else {
+        nearer_node = n->right;
+        further_node = n->left;
+    }
+
+    std::size_t index_nearer = nns(q, nearer_node, current_distance);
+    
+    // if ..... 
+
+
+    std::size_t index_further = nns(q, further_node, current_distance);
+
+
+}
+
 
 } // spatial 
 } // makeshape

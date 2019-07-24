@@ -25,14 +25,13 @@ class KDTree2 {
     ~KDTree2();
     void build(const Eigen::MatrixXd &points);
     void build(std::shared_ptr<const std::vector<Eigen::Vector3d>> points);
-    Eigen::Vector3d nearest_neighbour(const Eigen::Vector3d &q) const;
+    std::pair<std::size_t, double> nearest_neighbour(const Eigen::Vector3d &q) const;
     Edges get_edges() const;
   private:
     KDTreeNode2 *build(const std::vector<std::size_t> &pt_indices, int depth) const;
-    void nns(const Eigen::Vector3d &q, 
-             const KDTreeNode2 *n, 
-             double &curr_distance,
-             std::size_t &nearest_pt) const;
+    std::size_t nns(const Eigen::Vector3d &q, 
+                    const KDTreeNode2 *n,
+                    double &current_distance) const;
   private:
     std::size_t max_depth_{1}; // root is depth 0
     KDTreeNode2 *root_{nullptr};

@@ -9,51 +9,6 @@
 namespace makeshape {
 namespace spatial {
 namespace {
-    // do nothing
-#if 0
-    SplitAxis to_split = SplitAxis::X;
-    // compute split axis
-    {
-        std::vector<std::size_t> sort_x(N);
-        std::vector<std::size_t> sort_y(N);
-        std::vector<std::size_t> sort_z(N);
-        std::iota(sort_x.begin(), sort_x.end(), 0);
-        std::iota(sort_y.begin(), sort_y.end(), 0);
-        std::iota(sort_z.begin(), sort_z.end(), 0);
-
-        auto sort_by_axis = [&points](const SplitAxis axis, 
-                std::vector<size_t> &data){
-            int index = static_cast<int>(axis);
-            std::sort(data.begin(), data.end(), [&points, &index](
-                const std::size_t a, const std::size_t b) -> bool {
-                    return (points->at(a)[index] < points->at(b)[index]);
-            });
-        };
-    
-        auto compute_range = [&points, &N](const SplitAxis axis,
-                const std::vector<size_t> &d) -> double {
-            const int index = static_cast<int>(axis);
-            return points->at(d[N-1])[index] - points->at(d[0])[index];
-        };
-
-        auto compute_split_axis = [](const double rx, 
-                const double ry, 
-                const double rz) -> int {
-            if (rx > ry && rx > rx) { return 0u; }
-            else if (ry > rx && ry > rx) { return 1u; }
-            else { return 2u; }
-        };
-
-        sort_by_axis(SplitAxis::X, sort_x);
-        sort_by_axis(SplitAxis::Y, sort_y);
-        sort_by_axis(SplitAxis::Z, sort_z);
-        const double range_x = compute_range(SplitAxis::X, sort_x);
-        const double range_y = compute_range(SplitAxis::Y, sort_y);
-        const double range_z = compute_range(SplitAxis::Z, sort_z);
-        to_split = static_cast<SplitAxis>(compute_split_axis(range_x, 
-                    range_y, range_z));
-    }
-#endif
 
 constexpr std::size_t MAX_KDTREE_DEPTH = 8u;
 
