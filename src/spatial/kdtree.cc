@@ -12,7 +12,7 @@ namespace spatial {
 namespace {
 using PointVec = std::shared_ptr<const std::vector<Eigen::Vector3d>>;
 using IndexVec = std::vector<size_t>;
-	 
+using SplitAxis = KDTree::SplitAxis;
 
 constexpr size_t KDTREE_MAX_DEPTH = 8u;
 constexpr int DIM = 3;
@@ -28,7 +28,6 @@ SplitAxis to_axis(const int index) {
 int to_index(const SplitAxis axis) {
     return static_cast<int>(axis);
 }
-
 
 std::pair<SplitAxis, size_t> compute_axis_value(
         const PointVec &data,
@@ -65,8 +64,6 @@ std::pair<SplitAxis, size_t> compute_axis_value(
     range_axis[0] = x[N-1].data - x[0].data;
     range_axis[1] = y[N-1].data - y[0].data;
     range_axis[2] = z[N-1].data - z[0].data;
-
-    //printf("\t  range: {%f, %f, %f} | ", range_axis[0], range_axis[1], range_axis[2]);
 
     if (range_axis[0] > range_axis[1] ) {
         if (range_axis[0] > range_axis[2]) { // range_axis[0]
@@ -139,7 +136,7 @@ KDTree::KDTreeNode *KDTree::build(const std::vector<size_t> &pt_indices, int dep
     {
         CHECK(axis >= 0 && axis <= 2);
         //std::string offset(depth, ' ');
-        //printf("\t%s axis: %i | value: %f\n", offset.c_str(), axis, value);
+        //common::dprintf("\t%s axis: %i | value: %f\n", offset.c_str(), axis, value);
     }
 
     KDTreeNode *node = new KDTreeNode();

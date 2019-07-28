@@ -6,15 +6,18 @@
 namespace makeshape {
 namespace common {
 
-int dprintf(const char* format, ...) {
+int dprintf(const char *format, ...) {
 #ifdef NDEBUG
     return 0;
 #else
-    va_list vl;
-    va_start(vl, format);
-    auto ret = vprintf(format, vl);
-    va_end(vl);
-    return ret;
+   va_list arg;
+   int done;
+
+   va_start (arg, format);
+   done = vfprintf (stdout, format, arg);
+   va_end (arg);
+
+   return done;
 #endif
 }
 
