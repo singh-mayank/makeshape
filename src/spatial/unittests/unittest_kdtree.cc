@@ -9,8 +9,9 @@
 #include <random>
 #include <chrono>
 #include <inttypes.h>
-/*
-TEST(KDTree, neighbours) {
+
+TEST(KDTree2, neighbours) {
+
     using PointArray = std::vector<Eigen::Vector3d>;
 
     // mesh
@@ -25,15 +26,15 @@ TEST(KDTree, neighbours) {
     }
 
     // kdtree
-    makeshape::spatial::KDTree ktree(4);
-    ktree.build(pts);
+    makeshape::spatial::KDTree2 ktree2(4);
+    ktree2.build(pts);
     
     // samples
     constexpr int N_SAMPLES = 1000;
     PointArray q(N_SAMPLES);
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<> dis(-10, 10);
+    //std::random_device rd;
+    std::mt19937 gen(42);
+    std::uniform_real_distribution<> dis(-1, 1);
     for (int i = 0; i < N_SAMPLES; ++i) {
         double x = dis(gen);
         double y = dis(gen);
@@ -48,7 +49,8 @@ TEST(KDTree, neighbours) {
         auto start = std::chrono::steady_clock::now();   
         {
             for (int i = 0; i < N_SAMPLES; ++i) {
-                Eigen::Vector3d p = ktree.nearest_neighbour(q[i]);
+                const auto res = ktree2.nearest_neighbour(q[i]);
+                const auto p =  pts->at(res.first);
                 actual[i] = (q[i] - p).squaredNorm();
             }
         }
@@ -84,27 +86,5 @@ TEST(KDTree, neighbours) {
     for (int i = 0; i < N_SAMPLES; ++i) {
         EXPECT_GE(expected[i], actual[i]);
     }
-}
-*/
-
-TEST(KDTree2, neighbours) {
-
-    using PointArray = std::vector<Eigen::Vector3d>;
-
-    // mesh
-    makeshape::spatial::TriMesh m = makeshape::spatial::load_mesh("bunny.obj");
-    const auto vertices = m.vertices();
-    const auto n_rows = vertices.rows();
-    
-    std::shared_ptr<PointArray> pts = std::make_shared<PointArray>();
-    pts->reserve(n_rows);
-    for(int i = 0; i < n_rows; ++i) {
-        pts->push_back(vertices.row(i));
-    }
-
-    // kdtree
-    makeshape::spatial::KDTree2 ktree2(4);
-    ktree2.build(pts);
-
 
 }

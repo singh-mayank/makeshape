@@ -29,9 +29,10 @@ class KDTree2 {
     Edges get_edges() const;
   private:
     KDTreeNode2 *build(const std::vector<std::size_t> &pt_indices, int depth) const;
-    std::size_t nns(const Eigen::Vector3d &q, 
-                    const KDTreeNode2 *n,
-                    double &current_distance) const;
+    void nns(const Eigen::Vector3d &q, 
+            const KDTreeNode2 *n,
+            double &current_distance, 
+            size_t &curr_min_index) const;
   private:
     std::size_t max_depth_{1}; // root is depth 0
     KDTreeNode2 *root_{nullptr};

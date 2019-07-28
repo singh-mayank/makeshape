@@ -16,6 +16,10 @@ using IndexVec = std::vector<std::size_t>;
 constexpr std::size_t KDTREE_MAX_DEPTH = 8u;
 constexpr int DIM = 3;
 
+double SQ(const double &x) {
+    return (x) * (x);
+}
+
 SplitAxis to_axis(const int index) {
     return static_cast<SplitAxis>(index);
 }
@@ -61,7 +65,7 @@ std::pair<SplitAxis, std::size_t> compute_axis_value(
     range_axis[1] = y[N-1].data - y[0].data;
     range_axis[2] = z[N-1].data - z[0].data;
 
-    printf("\t  range: {%f, %f, %f} | ", range_axis[0], range_axis[1], range_axis[2]);
+    //printf("\t  range: {%f, %f, %f} | ", range_axis[0], range_axis[1], range_axis[2]);
 
     if (range_axis[0] > range_axis[1] ) {
         if (range_axis[0] > range_axis[2]) { // range_axis[0]
@@ -109,8 +113,10 @@ void KDTree2::build(std::shared_ptr<const std::vector<Eigen::Vector3d>> points) 
 
 std::pair<std::size_t, double> KDTree2::nearest_neighbour(const Eigen::Vector3d &q) const {
     double curr_min_dist = std::numeric_limits<double>::infinity();
-    std::size_t min_index = nns(q, root_, curr_min_dist);
-    return std::make_pair(min_index, curr_min_dist);
+    std::size_t curr_min_index = 0;
+    nns(q, root_, curr_min_dist, curr_min_index);
+    CHECK(curr_min_index < data_->size());
+    return std::make_pair(curr_min_index, curr_min_dist);
 }   
 
 /*
@@ -131,8 +137,8 @@ KDTreeNode2 *KDTree2::build(const std::vector<std::size_t> &pt_indices, int dept
     const double value          = data_->at(v_index)[axis];
     {
         CHECK(axis >= 0 && axis <= 2);
-        std::string offset(depth, ' ');
-        printf("\t%s axis: %i | value: %f\n", offset.c_str(), axis, value);
+        //std::string offset(depth, ' ');
+        //printf("\t%s axis: %i | value: %f\n", offset.c_str(), axis, value);
     }
 
     KDTreeNode2 *node = new KDTreeNode2();
@@ -166,11 +172,13 @@ KDTreeNode2 *KDTree2::build(const std::vector<std::size_t> &pt_indices, int dept
     return node;
 }
 
-std::size_t KDTree2::nns(const Eigen::Vector3d &q, 
-                     const KDTreeNode2 *n,
-                     double &current_distance) const {
+void KDTree2::nns(const Eigen::Vector3d &q,
+                  const KDTreeNode2 *n,
+                  double &current_distance, 
+                  size_t &current_min_index) const
+{
     if (n == nullptr) {
-        return 0;
+        return;
     }
 
     if (n->left == nullptr && n->right == nullptr) {
@@ -184,8 +192,11 @@ std::size_t KDTree2::nns(const Eigen::Vector3d &q,
                 min_index = each;
             }
         }
-        current_distance = min_distance;
-        return min_index;
+        if(min_distance < current_distance) { 
+            current_distance = min_distance;
+            current_min_index = min_index;
+        }
+        return;
     }
 
     const double value = n->value;
@@ -200,14 +211,11 @@ std::size_t KDTree2::nns(const Eigen::Vector3d &q,
         further_node = n->left;
     }
 
-    std::size_t index_nearer = nns(q, nearer_node, current_distance);
-    
-    // if ..... 
+    nns(q, nearer_node, current_distance, current_min_index);
 
-
-    std::size_t index_further = nns(q, further_node, current_distance);
-
-
+    if (SQ(q[to_index(axis)] - value) < current_distance) {
+        nns(q, further_node, current_distance, current_min_index);
+    }
 }
 
 
