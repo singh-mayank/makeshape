@@ -10,7 +10,9 @@ Utilities for 3d shape manipulation.
   - [ ] [ Manifold Contouring of an Adaptively Sampled Distance Field ](http://publications.lib.chalmers.se/records/fulltext/123811.pdf)
 - [x] [ A Spatial Data Structure for Fast Poisson-Disk Sample Generation ](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.78.3366&rep=rep1&type=pdf)
   - [x] [ Fast Poisson Disk Sampling in Arbitrary Dimensions ](https://www.cs.ubc.ca/~rbridson/docs/bridson-siggraph07-poissondisk.pdf)
-- [ ] More ..
+- [ ] Surface Reconstruction
+  - [ ] Poisson
+  - [ ] Wavelets
  
 #### Algorithms:
 - [x] [Octree](https://en.wikipedia.org/wiki/Octree) (search points in a radius `r`)
