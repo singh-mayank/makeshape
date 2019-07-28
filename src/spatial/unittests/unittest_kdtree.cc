@@ -1,6 +1,6 @@
 // Copyright MakeShape. 2019, All rights reserved.
 //
-#include "kdtree2.hh"
+#include "kdtree.hh"
 #include "trimesh.hh"
 #include "common.hh"
 
@@ -10,7 +10,7 @@
 #include <chrono>
 #include <inttypes.h>
 
-TEST(KDTree2, neighbours) {
+TEST(KDTree, neighbours) {
 
     using PointArray = std::vector<Eigen::Vector3d>;
 
@@ -26,7 +26,7 @@ TEST(KDTree2, neighbours) {
     }
 
     // kdtree
-    makeshape::spatial::KDTree2 ktree2(4);
+    makeshape::spatial::KDTree ktree2(4);
     ktree2.build(pts);
     
     // samples

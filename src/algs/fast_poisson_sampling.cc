@@ -59,7 +59,7 @@ std::vector<Eigen::Vector2d> sample_points_on_plane(const double r, const int k)
     }
     
     std::vector<Eigen::Vector2d> samples;
-    std::vector<std::size_t> active_list;
+    std::vector<size_t> active_list;
 
     auto insert = [&SIZE, &grid, &active_list, &samples](const Eigen::Vector2d &p) {
         samples.emplace_back(p);

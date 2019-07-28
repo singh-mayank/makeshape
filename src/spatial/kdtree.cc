@@ -2,15 +2,24 @@
 
 #include "kdtree.hh"
 #include "common.hh"
+#include <array>
+#include <limits>
 #include <numeric>
-#include <algorithm>
-#include <list>
- 
+
 namespace makeshape {
 namespace spatial {
-namespace {
 
-constexpr std::size_t MAX_KDTREE_DEPTH = 8u;
+namespace {
+using PointVec = std::shared_ptr<const std::vector<Eigen::Vector3d>>;
+using IndexVec = std::vector<size_t>;
+	 
+
+constexpr size_t KDTREE_MAX_DEPTH = 8u;
+constexpr int DIM = 3;
+
+double SQ(const double &x) {
+    return (x) * (x);
+}
 
 SplitAxis to_axis(const int index) {
     return static_cast<SplitAxis>(index);
@@ -20,241 +29,194 @@ int to_index(const SplitAxis axis) {
     return static_cast<int>(axis);
 }
 
-SplitAxis next_axis(const SplitAxis axis) {
-    return to_axis((to_index(axis) + 1) % 3);
-}
 
-double value_at_axis(const Eigen::Vector3d &p, const SplitAxis &axis) {
-    switch(axis) {
-        case SplitAxis::X: return p.x(); break;
-        case SplitAxis::Y: return p.y(); break;
-        case SplitAxis::Z: return p.z(); break;
-        default: CHECK(false);
-    }
-    return 0.0;
-}
-
-
-std::pair<AABB, AABB> compute_child_boxes(const SplitAxis n_axis, 
-                                          const double half_value,
-                                          const AABB &box) {
-    AABB box_left;
-    AABB box_right;
-    {
-        Eigen::Vector3d lcenter;
-        Eigen::Vector3d rcenter;
-        Eigen::Vector3d extents;
-
-        double ex = box.extents().x();
-        double ey = box.extents().y();
-        double ez = box.extents().z();
-
-        double cx = box.center().x();
-        double cy = box.center().y();
-        double cz = box.center().z();
-    
-        double s = 1;
-        switch(n_axis) {
-            case SplitAxis::X: 
-                extents = Eigen::Vector3d(ex*0.5, ey, ez);
-                lcenter = Eigen::Vector3d(cx - s*ex*0.25, cy, cz);
-                rcenter = Eigen::Vector3d(cx + s*ex*0.25, cy, cz);
-                break;
-            case SplitAxis::Y: 
-                extents = Eigen::Vector3d(ex, ey*0.5, ez);
-                lcenter = Eigen::Vector3d(cx, cy - s*ey*0.25, cz);
-                rcenter = Eigen::Vector3d(cx, cy + s*ey*0.25, cz);
-                break;
-            case SplitAxis::Z: 
-                extents = Eigen::Vector3d(ex, ey, ez*0.5);
-                lcenter = Eigen::Vector3d(cx, cy, cz - s*ez*0.25);
-                rcenter = Eigen::Vector3d(cx, cy, cz + s*ez*0.25);
-                break;
-            default: CHECK(false);
+std::pair<SplitAxis, size_t> compute_axis_value(
+        const PointVec &data,
+        const IndexVec &indices) {
+    struct IndexData {
+        size_t index;
+        double data;
+        bool operator<(const IndexData &other) const {
+            return (data < other.data);
         }
-        box_left = AABB(lcenter, extents);
-        box_right = AABB(rcenter, extents);
-        // box_left.print(); box_right.print();
-        //CHECK(value_at_axis(lcenter, n_axis) <= half_value);
-        //CHECK(value_at_axis(rcenter, n_axis) > half_value);
+    };
+    // deompose into each dimension
+    std::vector<IndexData> x, y, z;
+    const size_t N = indices.size();
+    CHECK(N > 0);
+
+    x.resize(N, {0, 0});
+    y.resize(N, {0, 0});
+    z.resize(N, {0, 0});
+    for (size_t i = 0; i < N; ++i) {
+        x[i].index = y[i].index = z[i].index = indices.at(i);
+        const Eigen::Vector3d &p = data->at(indices.at(i));
+        x[i].data = p.x();
+        y[i].data = p.y();
+        z[i].data = p.z();
     }
+    // sort by each dimension
+    std::sort(x.begin(), x.end());
+    std::sort(y.begin(), y.end());
+    std::sort(z.begin(), z.end());
 
+    // compute min range_axis
+    double range_axis[3] = {0, 0, 0};
+    range_axis[0] = x[N-1].data - x[0].data;
+    range_axis[1] = y[N-1].data - y[0].data;
+    range_axis[2] = z[N-1].data - z[0].data;
 
+    //printf("\t  range: {%f, %f, %f} | ", range_axis[0], range_axis[1], range_axis[2]);
 
-    return std::make_pair(box_left, box_right);
+    if (range_axis[0] > range_axis[1] ) {
+        if (range_axis[0] > range_axis[2]) { // range_axis[0]
+            return std::make_pair(SplitAxis::X, x.at(N/2).index);
+        } else { // range_axis[2]
+            return std::make_pair(SplitAxis::Z, z.at(N/2).index);
+        }
+    } else { // range_axis[1] < range_axis[0]
+        if (range_axis[1] > range_axis[2]) { // range_axis[1]
+            return std::make_pair(SplitAxis::Y, y.at(N/2).index);
+        } else { // range_axis[2]
+            return std::make_pair(SplitAxis::Z, z.at(N/2).index);
+        }
+    }
 }
+} // namespace
 
-}
-
-KDTree::KDTree(const std::size_t max_depth) 
-    : max_depth_(std::min(MAX_KDTREE_DEPTH, max_depth)) {
+KDTree::KDTree(size_t max_depth) 
+    : max_depth_(std::min(KDTREE_MAX_DEPTH, max_depth)) {
     // do nothing
 }
 
 KDTree::~KDTree() {
-    // TODO(mayank) : finish this
+
+}
+
+void KDTree::build(const Eigen::MatrixXd &points) {
+    const int n_rows = static_cast<int>(points.rows());
+    CHECK(n_rows > 0);
+    std::vector<Eigen::Vector3d> v(points.rows());
+    for (int i = 0; i < points.rows(); ++i) {
+        v[i] = points.row(i);
+    }
+    const auto pts = std::make_shared<const std::vector<Eigen::Vector3d>>(std::move(v));
+    build(pts);
 }
 
 void KDTree::build(std::shared_ptr<const std::vector<Eigen::Vector3d>> points) {
     CHECK(!points->empty());
     data_ = points;
-    const std::size_t N = data_->size();
-    std::vector<std::size_t> pts(N);
-    std::iota(pts.begin(), pts.end(), 0);
-    constexpr SplitAxis     START_AXIS = SplitAxis::X;
-    constexpr double        START_VALUE = 1.0;
-    constexpr std::size_t   START_DEPTH = 0u;
-    AABB box(Eigen::Vector3d(0.5, 0.5, 0.5), Eigen::Vector3d(1, 1, 1));
-    root_ = build(START_AXIS, START_VALUE, START_DEPTH, pts, box, root_);
-    CHECK(root_ != nullptr);
+    std::vector<size_t> indices(data_->size());
+    std::iota(indices.begin(), indices.end(), 0);
+    root_ = build(indices, 0);
 }
 
-Eigen::Vector3d KDTree::nearest_neighbour(const Eigen::Vector3d &q) const {
-    CHECK(root_ != nullptr);
-    double curr_dist = std::numeric_limits<double>::infinity();
-    std::size_t nearest_pt = 0;
-    nns(q, root_, curr_dist, nearest_pt);
-    return (data_->at(nearest_pt));
+std::pair<size_t, double> KDTree::nearest_neighbour(const Eigen::Vector3d &q) const {
+    double curr_min_dist = std::numeric_limits<double>::infinity();
+    size_t curr_min_index = 0;
+    nns(q, root_, curr_min_dist, curr_min_index);
+    CHECK(curr_min_index < data_->size());
+    return std::make_pair(curr_min_index, curr_min_dist);
+}   
+
+/*
+Edges KDTree::get_edges() const {
+
+
 }
+*/
 
-//std::vector<std::size_t> KDTree::nearest_n_neighbours(const Eigen::Vector3d &q, 
-                                                      //const std::size_t n) const {
-
-//}
-
-KDTreeNode *KDTree::build(const SplitAxis axis, 
-                          const double value,
-                          const std::size_t depth,
-                          const std::vector<std::size_t> &pt_indices,
-                          const AABB &box,
-                          KDTreeNode *n) const {
-    if (pt_indices.empty()) {
+KDTree::KDTreeNode *KDTree::build(const std::vector<size_t> &pt_indices, int depth) const {
+    if (pt_indices.empty() || depth >= max_depth_){
         return nullptr;
     }
-    
-    if (depth >= max_depth_) {
-        return new KDTreeNode{axis, value, nullptr, nullptr, box, pt_indices};
-    } else {
-        n = new KDTreeNode{axis, value, nullptr, nullptr, box, std::vector<std::size_t>{}};
+
+    const auto axis_value       = compute_axis_value(data_, pt_indices);
+    const int axis              = to_index(axis_value.first);
+    const size_t v_index   = axis_value.second;
+    const double value          = data_->at(v_index)[axis];
+    {
+        CHECK(axis >= 0 && axis <= 2);
+        //std::string offset(depth, ' ');
+        //printf("\t%s axis: %i | value: %f\n", offset.c_str(), axis, value);
     }
 
-#if 0
-    for(const auto &each : pt_indices) {
-        Eigen::Vector3d pt = data_->at(each);
-        if(!box.inside(pt)) {
-            printf("\t p: {%f, %f, %f} | value: %f | axis: %i\n", 
-                    pt[0], pt[1], pt[2], value, to_index(axis));
-            box.print_minmax();
-            //CHECK(false);
-        }
-    }
-#endif
+    KDTreeNode *node = new KDTreeNode();
+    node->axis = to_axis(axis);
+    node->value = value;
 
-    const auto n_axis = next_axis(axis);
-    const auto half_value = 0.5 * value;
-    const std::size_t N = pt_indices.size();
-    std::vector<std::size_t> lpts;
-    std::vector<std::size_t> rpts;
-    { // split points for left and right children
-        lpts.reserve(N/2);
-        rpts.reserve(N/2);
-        for (std::size_t i = 0; i < N; ++i) {
-            std::size_t pt_index = pt_indices.at(i);
-            Eigen::Vector3d pt = data_->at(pt_index);
-            double pt_value = value_at_axis(pt, n_axis);
-            if (pt_value <= half_value) {
-                lpts.push_back(pt_index);
+    // split data for left/right children
+    IndexVec left_pt_indices, right_pt_indices;
+    {
+        for(const auto &each_index : pt_indices) {
+            if (each_index == v_index) {
+                continue;
+            }
+            const double w = data_->at(each_index)[axis];
+            if (w <= value) {
+                left_pt_indices.push_back(each_index);
             } else {
-                rpts.push_back(pt_index);
+                right_pt_indices.push_back(each_index);
             }
         }
     }
-    const auto child_boxes = compute_child_boxes(n_axis, half_value, box);
-    n->left  = build(n_axis, half_value, depth+1, lpts, child_boxes.first, n->left);
-    n->right = build(n_axis, half_value, depth+1, rpts, child_boxes.second, n->right);
-    return n;
+    CHECK(pt_indices.size()-1 == left_pt_indices.size() + right_pt_indices.size());
+    
+    node->left = build(left_pt_indices, depth+1);
+    node->right = build(right_pt_indices, depth+1);
+    
+    if (node->left == nullptr && node->right == nullptr) {
+        node->points = pt_indices;
+    }
+
+    return node;
 }
 
-#if 1
-void KDTree::nns(const Eigen::Vector3d &q, 
-                 const KDTreeNode *n, 
-                 double &curr_distance,
-                 std::size_t &nearest_pt) const {
+void KDTree::nns(const Eigen::Vector3d &q,
+                  const KDTreeNode *n,
+                  double &current_distance, 
+                  size_t &current_min_index) const
+{
     if (n == nullptr) {
         return;
     }
+
     if (n->left == nullptr && n->right == nullptr) {
         CHECK(!n->points.empty());
+        double min_distance = std::numeric_limits<double>::max();
+        size_t min_index = 0;
         for (const auto each : n->points) {
             double d = (q - data_->at(each)).squaredNorm();
-            if ( d < curr_distance ) {
-                curr_distance = d;
-                nearest_pt = each;
+            if ( d < min_distance ) {
+                min_distance = d;
+                min_index = each;
             }
         }
+        if(min_distance < current_distance) { 
+            current_distance = min_distance;
+            current_min_index = min_index;
+        }
+        return;
+    }
+
+    const double value = n->value;
+    const SplitAxis axis = n->axis;
+    KDTreeNode *nearer_node;
+    KDTreeNode *further_node;
+    if ( q[to_index(axis)] <= value) {
+        nearer_node = n->left;
+        further_node = n->right;
     } else {
-        KDTreeNode *search_first = nullptr;
-        const auto index = to_index(n->axis);
-        if ( q[index] <= n->value ) {
-            search_first = n->left;
-        } else {
-            search_first = n->right;
-        }
-        if (search_first == n->left ) {
-            if (q[index] - curr_distance <= n->value ) {
-                nns(q, n->left, curr_distance, nearest_pt);
-            }
-            if (q[index] + curr_distance > n->value ) {
-                nns(q, n->right, curr_distance, nearest_pt);
-            }
-        } else { // search_first == n->right
-            if (q[index] + curr_distance > n->value ) {
-                nns(q, n->right, curr_distance, nearest_pt);
-            }
-            if (q[index] - curr_distance <= n->value ) {
-                nns(q, n->left, curr_distance, nearest_pt);
-            }
-        }
+        nearer_node = n->right;
+        further_node = n->left;
     }
-}
-#else
-void KDTree::nns(const Eigen::Vector3d &q, 
-                 const KDTreeNode *n, 
-                 double &curr_distance,
-                 std::size_t &nearest_pt) const {
-    if (n == nullptr) {
-        return;
-    }
-    if (n->left == nullptr && n->right == nullptr) {
-        CHECK(!n->points.empty());
-        for (const auto each : n->points) {
-            double d = (q - data_->at(each)).squaredNorm();
-            if ( d < curr_distance ) {
-                curr_distance = d;
-                nearest_pt = each;
-            }
-        }
-    }
-}
-#endif
 
+    nns(q, nearer_node, current_distance, current_min_index);
 
-Edges KDTree::get_edges() const {
-    Edges e;
-    std::vector<CubeEdges> ne;
-    std::list<KDTreeNode*> q;
-    q.push_back(root_);
-    while(!q.empty()){
-        const KDTreeNode *curr = q.front();
-        q.pop_front();
-        if (curr == nullptr) {
-            continue;
-        }
-        ne.emplace_back(get_cube_edges(curr->box));
-        q.push_back(curr->left);
-        q.push_back(curr->right);
+    if (SQ(q[to_index(axis)] - value) < current_distance) {
+        nns(q, further_node, current_distance, current_min_index);
     }
-    return make_edges(ne);
 }
 
 

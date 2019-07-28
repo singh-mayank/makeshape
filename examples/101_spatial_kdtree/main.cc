@@ -40,8 +40,8 @@ int main(int argc, char *argv[])
     // kdtree
     makeshape::spatial::KDTree ktree(8);
     ktree.build(pts);
-    const auto edges = ktree.get_edges();
-    application.set_edges(edges);
+    //const auto edges = ktree.get_edges();
+    //application.set_edges(edges);
     
     {
         Eigen::MatrixXd P;
