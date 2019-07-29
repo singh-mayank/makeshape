@@ -5,6 +5,7 @@
 #include <array>
 #include <limits>
 #include <numeric>
+#include <list>
 
 namespace makeshape {
 namespace spatial {
@@ -129,12 +130,26 @@ std::pair<size_t, double> KDTree::nearest_neighbour(const Eigen::Vector3d &q) co
     return std::make_pair(curr_min_index, curr_min_dist);
 }   
 
-/*
 Edges KDTree::get_edges() const {
-
-
+    if (root_ == nullptr) {
+        return Edges{};
+    }
+    // traverse all nodes
+    std::vector<CubeEdges> ne;
+    std::list<KDTree::KDTreeNode*> q;
+    q.push_back(root_);
+    while(!q.empty()){
+        const KDTreeNode *curr = q.front();
+        q.pop_front();
+        if (curr == nullptr ){
+            continue;
+        }
+        ne.emplace_back(get_cube_edges(curr->box));
+        q.push_back(curr->left);
+        q.push_back(curr->right);
+    }
+    return make_edges(ne);
 }
-*/
 
 KDTree::KDTreeNode *KDTree::build(const std::vector<size_t> &pt_indices, const int &depth, const AABB &box) const {
     if (pt_indices.empty() || depth >= max_depth_){
