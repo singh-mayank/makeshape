@@ -79,6 +79,17 @@ std::pair<SplitAxis, size_t> compute_axis_value(
         }
     }
 }
+
+std::pair<AABB, AABB> create_child_box(const KDTree::SplitAxis &axis, const double &value, const AABB &box) {
+    AABB box_left;
+    AABB box_right;
+    // compute box_left - center / extents
+    // compute box_right - center / extents
+
+
+    return std::make_pair(box_left, box_right);
+}   
+
 } // namespace
 
 KDTree::KDTree(size_t max_depth) 
@@ -90,23 +101,13 @@ KDTree::~KDTree() {
 
 }
 
-void KDTree::build(const Eigen::MatrixXd &points) {
-    const int n_rows = static_cast<int>(points.rows());
-    CHECK(n_rows > 0);
-    std::vector<Eigen::Vector3d> v(points.rows());
-    for (int i = 0; i < points.rows(); ++i) {
-        v[i] = points.row(i);
-    }
-    const auto pts = std::make_shared<const std::vector<Eigen::Vector3d>>(std::move(v));
-    build(pts);
-}
-
-void KDTree::build(std::shared_ptr<const std::vector<Eigen::Vector3d>> points) {
+void KDTree::build(const std::shared_ptr<std::vector<Eigen::Vector3d>> &points) {
     CHECK(!points->empty());
     data_ = points;
     std::vector<size_t> indices(data_->size());
     std::iota(indices.begin(), indices.end(), 0);
-    root_ = build(indices, 0);
+    AABB box(Eigen::Vector3d(0, 0, 0), Eigen::Vector3d(1, 1, 1));
+    root_ = build(indices, 0, box);
 }
 
 std::pair<size_t, double> KDTree::nearest_neighbour(const Eigen::Vector3d &q) const {
@@ -124,7 +125,7 @@ Edges KDTree::get_edges() const {
 }
 */
 
-KDTree::KDTreeNode *KDTree::build(const std::vector<size_t> &pt_indices, int depth) const {
+KDTree::KDTreeNode *KDTree::build(const std::vector<size_t> &pt_indices, const int &depth, const AABB &box) const {
     if (pt_indices.empty() || depth >= max_depth_){
         return nullptr;
     }
@@ -139,7 +140,7 @@ KDTree::KDTreeNode *KDTree::build(const std::vector<size_t> &pt_indices, int dep
         //common::dprintf("\t%s axis: %i | value: %f\n", offset.c_str(), axis, value);
     }
 
-    KDTreeNode *node = new KDTreeNode();
+    KDTree::KDTreeNode *node = new KDTreeNode();
     node->axis = to_axis(axis);
     node->value = value;
 
@@ -159,9 +160,10 @@ KDTree::KDTreeNode *KDTree::build(const std::vector<size_t> &pt_indices, int dep
         }
     }
     CHECK(pt_indices.size()-1 == left_pt_indices.size() + right_pt_indices.size());
+    auto child_box = create_child_box(node->axis, node->value, box);
     
-    node->left = build(left_pt_indices, depth+1);
-    node->right = build(right_pt_indices, depth+1);
+    node->left = build(left_pt_indices, depth+1, child_box.first);
+    node->right = build(right_pt_indices, depth+1, child_box.second);
     
     if (node->left == nullptr && node->right == nullptr) {
         node->points = pt_indices;

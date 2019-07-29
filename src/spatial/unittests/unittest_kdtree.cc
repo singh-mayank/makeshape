@@ -1,5 +1,5 @@
 // Copyright MakeShape. 2019, All rights reserved.
-//
+
 #include "kdtree.hh"
 #include "trimesh.hh"
 #include "common.hh"
@@ -12,14 +12,13 @@
 
 TEST(KDTree, neighbours) {
 
-    using PointArray = std::vector<Eigen::Vector3d>;
-
     // mesh
     makeshape::spatial::TriMesh m = makeshape::spatial::load_mesh("bunny.obj");
     const auto vertices = m.vertices();
     const auto n_rows = vertices.rows();
     
-    std::shared_ptr<PointArray> pts = std::make_shared<PointArray>();
+    std::shared_ptr<std::vector<Eigen::Vector3d>> pts = 
+        std::make_shared<std::vector<Eigen::Vector3d>>();
     pts->reserve(n_rows);
     for(int i = 0; i < n_rows; ++i) {
         pts->push_back(vertices.row(i));
@@ -31,7 +30,7 @@ TEST(KDTree, neighbours) {
     
     // samples
     constexpr int N_SAMPLES = 1000;
-    PointArray q(N_SAMPLES);
+    std::vector<Eigen::Vector3d> q(N_SAMPLES);
     //std::random_device rd;
     std::mt19937 gen(42);
     std::uniform_real_distribution<> dis(-1, 1);

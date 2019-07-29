@@ -15,8 +15,7 @@ class KDTree {
     enum class SplitAxis { X = 0, Y = 1, Z = 2 };
     KDTree(const size_t max_depth);
     ~KDTree();
-    void build(const Eigen::MatrixXd &points);
-    void build(std::shared_ptr<const std::vector<Eigen::Vector3d>> points);
+    void build(const std::shared_ptr<std::vector<Eigen::Vector3d>> &points);
     std::pair<size_t, double> nearest_neighbour(const Eigen::Vector3d &q) const;
     Edges get_edges() const;
   private:
@@ -26,9 +25,12 @@ class KDTree {
 	    KDTreeNode *left{nullptr};
 	    KDTreeNode *right{nullptr};
 	    std::vector<size_t> points;
+      AABB box;
     }; // KDTreeNode
 
-    KDTreeNode *build(const std::vector<size_t> &pt_indices, int depth) const;
+    KDTree::KDTreeNode *build(const std::vector<size_t> &pt_indices, 
+                              const int &depth, 
+                              const AABB &box) const;
     void nns(const Eigen::Vector3d &q, 
             const KDTreeNode *n,
             double &current_distance, 
