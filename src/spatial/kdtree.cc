@@ -81,13 +81,24 @@ std::pair<SplitAxis, size_t> compute_axis_value(
 }
 
 std::pair<AABB, AABB> create_child_box(const KDTree::SplitAxis &axis, const double &value, const AABB &box) {
-    AABB box_left;
-    AABB box_right;
-    // compute box_left - center / extents
-    // compute box_right - center / extents
-
-
-    return std::make_pair(box_left, box_right);
+    Eigen::Vector3d center = box.center();
+    Eigen::Vector3d extents = box.extents();
+    Eigen::Vector3d minpt = box.min_pt();
+    Eigen::Vector3d maxpt = box.max_pt();
+    int index = to_index(axis);
+    // compute center
+    Eigen::Vector3d box_left_center = center;
+    Eigen::Vector3d box_right_center = center;
+    box_left_center[index]  = 0.5*(minpt[index] + value);
+    box_right_center[index] = 0.5*(value + maxpt[index]);
+    // compute extents
+    Eigen::Vector3d box_left_extents = extents;
+    Eigen::Vector3d box_right_extents = extents;
+    box_left_extents[index]  = 0.5*(value - minpt[index]);
+    box_right_extents[index] = 0.5*(maxpt[index] - value);
+    return std::make_pair(
+        AABB(box_left_center, box_left_extents),
+        AABB(box_right_center, box_right_extents));
 }   
 
 } // namespace
