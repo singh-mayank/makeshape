@@ -4,6 +4,7 @@
 cmake_minimum_required(VERSION 3.1)
 project("makeshape")
 enable_testing()
+set( CMAKE_EXPORT_COMPILE_COMMANDS 1 )
 
 #----------------------------------------------------------------------
 # find cmake files here
