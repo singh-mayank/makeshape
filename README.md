@@ -29,7 +29,7 @@ Utilities for 3d shape manipulation.
 - [ ] Point cloud (explicit) to signed distance field (implicit)
 
 #### ToDo:
-- [ ] Visualize KDTree
+- [x] Visualize KDTree
 - [ ] Visualize distance field on regular grid
 
 ## Compile
