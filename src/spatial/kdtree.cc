@@ -30,7 +30,8 @@ int to_index(const SplitAxis axis) {
     return static_cast<int>(axis);
 }
 
-std::pair<SplitAxis, size_t> compute_axis_value(
+// return axis, value for split
+std::pair<SplitAxis, double> compute_axis_value(
         const PointVec &data,
         const IndexVec &indices) {
     struct IndexData {
@@ -68,15 +69,15 @@ std::pair<SplitAxis, size_t> compute_axis_value(
 
     if (range_axis[0] > range_axis[1] ) {
         if (range_axis[0] > range_axis[2]) { // range_axis[0]
-            return std::make_pair(SplitAxis::X, x.at(N/2).index);
+            return std::make_pair(SplitAxis::X, range_axis[0]*0.5);
         } else { // range_axis[2]
-            return std::make_pair(SplitAxis::Z, z.at(N/2).index);
+            return std::make_pair(SplitAxis::Z, range_axis[2]*0.5);
         }
     } else { // range_axis[1] < range_axis[0]
         if (range_axis[1] > range_axis[2]) { // range_axis[1]
-            return std::make_pair(SplitAxis::Y, y.at(N/2).index);
+            return std::make_pair(SplitAxis::Y, range_axis[1]*0.5);
         } else { // range_axis[2]
-            return std::make_pair(SplitAxis::Z, z.at(N/2).index);
+            return std::make_pair(SplitAxis::Z, range_axis[2]*0.5);
         }
     }
 }
@@ -130,7 +131,8 @@ std::pair<size_t, double> KDTree::nearest_neighbour(const Eigen::Vector3d &q) co
     nns(q, root_, curr_min_dist, curr_min_index);
     CHECK(curr_min_index < data_->size());
     return std::make_pair(curr_min_index, curr_min_dist);
-}   
+} 
+
 
 Edges KDTree::get_edges() const {
     if (root_ == nullptr) {
@@ -162,8 +164,7 @@ KDTree::KDTreeNode *KDTree::build(const std::vector<size_t> &pt_indices,
 
     const auto axis_value  = compute_axis_value(data_, pt_indices);
     const int axis         = to_index(axis_value.first);
-    const size_t v_index   = axis_value.second;
-    const double value     = data_->at(v_index)[axis];
+    const double value     = axis_value.second;
     {
         CHECK(axis >= 0 && axis <= 2);
         //std::string offset(depth, ' ');
@@ -179,9 +180,6 @@ KDTree::KDTreeNode *KDTree::build(const std::vector<size_t> &pt_indices,
     IndexVec left_pt_indices, right_pt_indices;
     {
         for(const auto &each_index : pt_indices) {
-            if (each_index == v_index) {
-                continue;
-            }
             const double w = data_->at(each_index)[axis];
             if (w <= value) {
                 left_pt_indices.push_back(each_index);
@@ -190,7 +188,7 @@ KDTree::KDTreeNode *KDTree::build(const std::vector<size_t> &pt_indices,
             }
         }
     }
-    CHECK(pt_indices.size()-1 == left_pt_indices.size() + right_pt_indices.size());
+    CHECK(pt_indices.size() == left_pt_indices.size() + right_pt_indices.size());
     const auto child_box = create_child_box(node->axis, node->value, box);
     node->left = build(left_pt_indices, depth+1, child_box.first);
     node->right = build(right_pt_indices, depth+1, child_box.second);

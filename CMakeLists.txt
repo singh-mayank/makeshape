@@ -4,7 +4,17 @@
 cmake_minimum_required(VERSION 3.1)
 project("makeshape")
 enable_testing()
+
+#----------------------------------------------------------------------
+# YCM
+#----------------------------------------------------------------------
 set( CMAKE_EXPORT_COMPILE_COMMANDS 1 )
+IF( EXISTS "${CMAKE_CURRENT_BINARY_DIR}/compile_commands.json" )
+  EXECUTE_PROCESS( COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    ${CMAKE_CURRENT_BINARY_DIR}/compile_commands.json
+    ${CMAKE_CURRENT_SOURCE_DIR}/compile_commands.json
+  )
+ENDIF()
 
 #----------------------------------------------------------------------
 # find cmake files here

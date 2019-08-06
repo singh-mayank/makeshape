@@ -25,14 +25,23 @@ TEST(KDTree, neighbours) {
     }
 
     // kdtree
-    makeshape::spatial::KDTree ktree2(4);
-    ktree2.build(pts);
+    makeshape::spatial::KDTree ktree(4);
+    ktree.build(pts);
     
     // samples
     constexpr int N_SAMPLES = 1000;
     std::vector<Eigen::Vector3d> q(N_SAMPLES);
-    //std::random_device rd;
+
+    // NOTE(mayank): This should be deterministic.
+    // However I would like to test kdtree repeatedly
+    // with slightly different input, just to be sure
+    // that it is indeed absolutely correct
+#if 1
+    std::random_device rd;
+    std::mt19937 gen(rd());
+#else 
     std::mt19937 gen(42);
+#endif
     std::uniform_real_distribution<> dis(-1, 1);
     for (int i = 0; i < N_SAMPLES; ++i) {
         double x = dis(gen);
@@ -48,7 +57,7 @@ TEST(KDTree, neighbours) {
         auto start = std::chrono::steady_clock::now();   
         {
             for (int i = 0; i < N_SAMPLES; ++i) {
-                const auto res = ktree2.nearest_neighbour(q[i]);
+                const auto res = ktree.nearest_neighbour(q[i]);
                 const auto p =  pts->at(res.first);
                 actual[i] = (q[i] - p).squaredNorm();
             }
@@ -80,8 +89,9 @@ TEST(KDTree, neighbours) {
     }
 
     // test
+    makeshape::common::dprintf("[ %lld << %lld ]\n", t1, t2);
     EXPECT_LE(t1, t2);
-    constexpr double TOLERANCE = 1e-6;
+    constexpr double TOLERANCE = 1e-9;
     for (int i = 0; i < N_SAMPLES; ++i) {
         EXPECT_GE(expected[i], actual[i]);
     }

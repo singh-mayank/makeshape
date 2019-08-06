@@ -20,20 +20,20 @@ class KDTree {
     Edges get_edges() const;
   private:
     struct KDTreeNode {
-	    SplitAxis axis;
-	    double value;
-	    KDTreeNode *left{nullptr};
-	    KDTreeNode *right{nullptr};
-	    std::vector<size_t> points;
+        SplitAxis axis;
+        double value;
+        KDTreeNode *left{nullptr};
+        KDTreeNode *right{nullptr};
+        std::vector<size_t> points;
       AABB box;
     }; // KDTreeNode
 
     KDTree::KDTreeNode *build(const std::vector<size_t> &pt_indices, 
                               const int &depth, 
                               const AABB &box) const;
-    void nns(const Eigen::Vector3d &q, 
+    void nns(const Eigen::Vector3d &q,
             const KDTreeNode *n,
-            double &current_distance, 
+            double &current_distance,
             size_t &curr_min_index) const;
 
     size_t max_depth_{1}; // root is depth 0

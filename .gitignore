@@ -34,3 +34,6 @@
 build/*
 builds/*
 !data/*
+
+# YCM
+compile_commands.json
