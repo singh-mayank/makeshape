@@ -113,7 +113,18 @@ KDTree::KDTree(size_t max_depth)
 }
 
 KDTree::~KDTree() {
-
+    std::list<KDTree::KDTreeNode*> l;
+    l.push_back(root_);
+    while (!l.empty()) {
+        KDTree::KDTreeNode* curr = l.front();
+        l.pop_front();
+        if (curr != nullptr) {
+            l.push_back(curr->left);
+            l.push_back(curr->right);
+            delete curr;
+            curr = nullptr;
+        }
+    }
 }
 
 void KDTree::build(const std::shared_ptr<std::vector<Eigen::Vector3d>> &points) {
