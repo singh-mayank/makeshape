@@ -13,6 +13,7 @@ Utilities for 3d shape manipulation.
 - [ ] Surface Reconstruction
   - [ ] Poisson
   - [ ] Wavelets
+  - [ ] [ PolyFit: Polygonal Surface Reconstruction from Point Clouds ](https://3d.bk.tudelft.nl/liangliang/publications/2017/polyfit/polyfit.html)
  
 #### Algorithms:
 - [x] [Octree](https://en.wikipedia.org/wiki/Octree) (search points in a radius `r`)
