@@ -14,6 +14,7 @@ set( headers
     intersections.hh
     kdtree.hh
     octree.hh
+    sdf.hh
     trimesh.hh
 )
 
@@ -25,6 +26,7 @@ set( sources
     intersections.cc
     kdtree.cc
     octree.cc
+    sdf.cc
     trimesh.cc
 )
 

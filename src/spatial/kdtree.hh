@@ -1,11 +1,13 @@
 // Copyright MakeShape. 2019, All rights reserved.
+
+#pragma once
+
 #include "edges.hh"
 #include "aabb.hh"
 #include <Eigen/Dense>
 #include <vector>
 #include <memory>
 
-#pragma once
 
 namespace makeshape {
 namespace spatial {

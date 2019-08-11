@@ -1,9 +1,10 @@
 // Copyright MakeShape. 2019, All rights reserved.
 
+#pragma once
+
 #include <Eigen/Dense>
 #include <vector>
 
-#pragma once
 
 namespace makeshape {
 namespace spatial {

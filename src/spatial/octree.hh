@@ -1,10 +1,12 @@
 // Copyright MakeShape. 2019, All rights reserved.
+
+#pragma once
+
 #include "edges.hh"
 #include "aabb.hh"
 #include <Eigen/Dense>
 #include <vector>
 
-#pragma once
 
 //
 // TODO(mayank): replace explicit points with point indices
